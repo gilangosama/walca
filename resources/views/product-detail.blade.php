@@ -259,17 +259,17 @@
                     </div>
                     
                     <!-- Product Title -->
-                    <h1 class="product-title mb-3">BOXY HOODIE CHAMBREDELAVAIN - SULLY BLACK</h1>
+                    <h1 class="product-title mb-3">{{ $product->name }}</h1>
                     
                     <!-- Product Price -->
-                    <p class="product-price mb-6">Rp 465,000</p>
+                    <p class="product-price mb-6">{{ $product->price }}</p>
                     
                     <!-- Quantity Information -->
                     <div class="info-section">
                         <h3 class="info-title">Quantity Information</h3>
                         <div class="flex items-center mb-1">
                             <span class="text-sm font-medium">Maximum Quantity:</span>
-                            <span class="ml-auto font-bold">1</span>
+                            <span class="ml-auto font-bold">{{ $product->stock }}</span>
                         </div>
                     </div>
                     
@@ -277,9 +277,15 @@
                     <div class="info-section">
                         <h3 class="info-title">Size</h3>
                         <div class="grid grid-cols-3 gap-2 mb-4 max-w-xs">
-                            <div class="size-btn disabled text-center py-2 text-sm">M</div>
-                            <div class="size-btn disabled text-center py-2 text-sm">L</div>
-                            <div class="size-btn disabled text-center py-2 text-sm">XL</div>
+                            @if(is_array($product->size) || is_object($product->size))
+                                @foreach ($product->size as $item)
+                                    <div class="size-btn text-center py-2 text-sm">
+                                        {{ $item }}
+                                    </div>
+                                @endforeach
+                            @else
+                                <p class="text-sm text-red-500">Size information is not available.</p>
+                            @endif
                         </div>
                     </div>
                     
