@@ -22,8 +22,11 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => 'password',
+            'password' => bcrypt('password'),
             'role' => 'admin',
         ]);
+
+        // Memanggil CategorySeeder
+        $this->call(CategorySeeder::class);
     }
 }

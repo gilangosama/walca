@@ -19,6 +19,12 @@ class Product extends Model
         'weight',
     ];
 
+    protected $casts = [
+        'jenis' => 'array',
+        'size' => 'array',
+        'image' => 'array',
+    ];
+
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'product_categories'); // Correct table name
