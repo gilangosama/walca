@@ -45,6 +45,11 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        // Cek apakah ada parameter redirect
+        if ($request->has('redirect')) {
+            return redirect($request->redirect);
+        }
+
         return redirect('/');
     }
 }

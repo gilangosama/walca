@@ -145,7 +145,7 @@
                         <div class="space-y-4">
                             <div class="flex justify-between">
                                 <p class="text-sm text-gray-600">Subtotal</p>
-                                <p class="text-sm font-medium text-gray-900">Rp 648.000</p>
+                                <p class="text-sm font-medium text-gray-900 order-summary-subtotal">Rp 648.000</p>
                             </div>
                             <div class="flex justify-between">
                                 <p class="text-sm text-gray-600">Shipping</p>
@@ -156,13 +156,13 @@
                         <div class="border-t border-gray-200 mt-6 pt-6">
                             <div class="flex justify-between">
                                 <p class="text-base font-medium text-gray-900">Total</p>
-                                <p class="text-base font-medium text-gray-900">Rp 648.000</p>
+                                <p class="text-base font-medium text-gray-900 order-summary-total">Rp 648.000</p>
                             </div>
                         </div>
                         
-                        <button class="mt-6 w-full bg-black py-3 px-4 rounded-md text-sm font-medium text-white hover:bg-gray-900 transition duration-150 ease-in-out">
+                        <a href="{{ route('checkout') }}" id="checkoutButton" class="block text-center mt-6 w-full bg-black py-3 px-4 rounded-md text-sm font-medium text-white hover:bg-gray-900 transition duration-150 ease-in-out">
                             Continue to Checkout
-                        </button>
+                        </a>
                     </div>
 
                     <!-- Payment Methods -->
@@ -183,40 +183,177 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Tombol quantity
-            const minusBtns = document.querySelectorAll('.quantity-btn:first-child');
-            const plusBtns = document.querySelectorAll('.quantity-btn:last-child');
+            // Load cart items from localStorage
+            const currentOrder = JSON.parse(localStorage.getItem('currentOrder'));
+            if (currentOrder) {
+                // Kosongkan cart container terlebih dahulu
+                const cartContainer = document.querySelector('.divide-y.divide-gray-200');
+                cartContainer.innerHTML = '';
+                
+                // Format harga
+                const formatter = new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
+                });
+                
+                // Hitung total
+                const totalPrice = currentOrder.price * currentOrder.quantity;
+                
+                // Buat element cart item
+                const cartItemHTML = `
+                    <div class="cart-item py-6 md:grid md:grid-cols-12 md:gap-4 md:items-center">
+                        <div class="md:col-span-6 flex items-start space-x-4">
+                            <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                                <img src="{{ asset('img/1.jpg') }}" alt="${currentOrder.productName}" class="h-full w-full object-cover object-center">
+                            </div>
+                            <div class="flex flex-col">
+                                <h3 class="text-base font-medium text-gray-900">${currentOrder.productName}</h3>
+                                <p class="mt-1 text-sm text-gray-500">${currentOrder.size}</p>
+                                <button class="remove-btn mt-2 text-sm text-gray-500 flex items-center md:hidden" onclick="removeCartItem()">
+                                    <i class="fas fa-trash mr-1"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2 text-center mt-4 md:mt-0">
+                            <p class="text-sm font-medium text-gray-900">${formatter.format(currentOrder.price)}</p>
+                        </div>
+                        <div class="md:col-span-2 flex justify-center mt-4 md:mt-0">
+                            <div class="flex items-center">
+                                <button class="quantity-btn rounded-l-md" onclick="updateQuantity(-1)">
+                                    <i class="fas fa-minus text-xs"></i>
+                                </button>
+                                <input type="text" value="${currentOrder.quantity}" class="w-10 h-30px text-center border-t border-b border-gray-300 text-sm quantity-input" readonly>
+                                <button class="quantity-btn rounded-r-md" onclick="updateQuantity(1)">
+                                    <i class="fas fa-plus text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2 text-center mt-4 md:mt-0">
+                            <p class="item-total text-sm font-medium text-gray-900">${formatter.format(totalPrice)}</p>
+                            <button class="remove-btn hidden md:inline-block text-sm text-gray-500 mt-2" onclick="removeCartItem()">
+                                <i class="fas fa-trash mr-1"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                // Tambahkan ke container
+                cartContainer.innerHTML = cartItemHTML;
+                
+                // Update subtotal dan total
+                document.querySelectorAll('.order-summary-subtotal').forEach(el => {
+                    el.textContent = formatter.format(totalPrice);
+                });
+                document.querySelectorAll('.order-summary-total').forEach(el => {
+                    el.textContent = formatter.format(totalPrice);
+                });
+            } else {
+                // Jika tidak ada item di cart
+                const cartContainer = document.querySelector('.divide-y.divide-gray-200');
+                cartContainer.innerHTML = `
+                    <div class="py-6 text-center">
+                        <p class="text-gray-500">Keranjang belanja Anda kosong.</p>
+                        <a href="{{ route('shops') }}" class="mt-4 inline-block text-sm font-medium text-black">
+                            Belanja Sekarang
+                        </a>
+                    </div>
+                `;
+                
+                // Disable tombol checkout
+                const checkoutButton = document.getElementById('checkoutButton');
+                if (checkoutButton) {
+                    checkoutButton.classList.add('opacity-50', 'cursor-not-allowed');
+                    checkoutButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        alert('Keranjang belanja Anda kosong.');
+                    });
+                }
+            }
             
-            minusBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const input = this.nextElementSibling;
-                    let value = parseInt(input.value);
-                    if (value > 1) {
-                        input.value = value - 1;
+            // Fungsi untuk update quantity
+            window.updateQuantity = function(change) {
+                const input = document.querySelector('.quantity-input');
+                let value = parseInt(input.value);
+                const newValue = value + change;
+                
+                if (newValue >= 1) {
+                    input.value = newValue;
+                    
+                    // Update localStorage
+                    const currentOrder = JSON.parse(localStorage.getItem('currentOrder'));
+                    if (currentOrder) {
+                        currentOrder.quantity = newValue;
+                        localStorage.setItem('currentOrder', JSON.stringify(currentOrder));
+                        
+                        // Format currency
+                        const formatter = new Intl.NumberFormat('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                            minimumFractionDigits: 0
+                        });
+                        
+                        // Update total price
+                        const totalPrice = currentOrder.price * newValue;
+                        document.querySelector('.item-total').textContent = formatter.format(totalPrice);
+                        
+                        // Update subtotal dan total
+                        document.querySelectorAll('.order-summary-subtotal').forEach(el => {
+                            el.textContent = formatter.format(totalPrice);
+                        });
+                        document.querySelectorAll('.order-summary-total').forEach(el => {
+                            el.textContent = formatter.format(totalPrice);
+                        });
                     }
-                });
-            });
+                }
+            };
             
-            plusBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const input = this.previousElementSibling;
-                    let value = parseInt(input.value);
-                    input.value = value + 1;
+            // Fungsi untuk menghapus item
+            window.removeCartItem = function() {
+                localStorage.removeItem('currentOrder');
+                const cartItem = document.querySelector('.cart-item');
+                cartItem.style.opacity = '0';
+                
+                // Format currency untuk tampilan
+                const formatter = new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
                 });
-            });
-            
-            // Tombol hapus
-            const removeBtns = document.querySelectorAll('.remove-btn');
-            
-            removeBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const item = this.closest('.cart-item');
-                    item.style.opacity = '0';
-                    setTimeout(() => {
-                        item.remove();
-                    }, 300);
-                });
-            });
+                
+                setTimeout(() => {
+                    cartItem.remove();
+                    
+                    // Reset subtotal dan total
+                    document.querySelectorAll('.order-summary-subtotal').forEach(el => {
+                        el.textContent = formatter.format(0);
+                    });
+                    document.querySelectorAll('.order-summary-total').forEach(el => {
+                        el.textContent = formatter.format(0);
+                    });
+                    
+                    // Tampilkan pesan keranjang kosong
+                    const cartContainer = document.querySelector('.divide-y.divide-gray-200');
+                    cartContainer.innerHTML = `
+                        <div class="py-6 text-center">
+                            <p class="text-gray-500">Keranjang belanja Anda kosong.</p>
+                            <a href="{{ route('shops') }}" class="mt-4 inline-block text-sm font-medium text-black">
+                                Belanja Sekarang
+                            </a>
+                        </div>
+                    `;
+                    
+                    // Disable tombol checkout
+                    const checkoutButton = document.getElementById('checkoutButton');
+                    if (checkoutButton) {
+                        checkoutButton.classList.add('opacity-50', 'cursor-not-allowed');
+                        checkoutButton.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            alert('Keranjang belanja Anda kosong.');
+                        });
+                    }
+                }, 300);
+            };
         });
     </script>
 </x-app-layout>

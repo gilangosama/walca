@@ -30,6 +30,11 @@
             border-color: #000;
             background-color: #f0f0f0;
         }
+        .size-btn.bg-black {
+            background-color: black;
+            color: white;
+            border-color: black;
+        }
         .size-btn.disabled {
             color: #999;
             cursor: not-allowed;
@@ -220,6 +225,76 @@
         .spec-item i {
             font-size: 0.8rem;
         }
+        /* Custom Alert Modal Styles */
+        .custom-alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .custom-alert-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .custom-alert {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 400px;
+            padding: 0;
+            overflow: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        .custom-alert-overlay.active .custom-alert {
+            transform: translateY(0);
+        }
+        .custom-alert-header {
+            background-color: black;
+            padding: 15px 20px;
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .custom-alert-header i {
+            margin-right: 10px;
+        }
+        .custom-alert-content {
+            padding: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+        .custom-alert-footer {
+            padding: 15px 20px;
+            background-color: #f8f8f8;
+            text-align: right;
+        }
+        .custom-alert-button {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .custom-alert-button:hover {
+            background-color: #333;
+            transform: translateY(-2px);
+        }
     </style>
 
     <!-- Product Detail Section -->
@@ -279,32 +354,39 @@
                         <div class="grid grid-cols-3 gap-2 mb-4 max-w-xs">
                             @if(is_array($product->size) || is_object($product->size))
                                 @foreach ($product->size as $item)
-                                    <div class="size-btn text-center py-2 text-sm">
+                                    <button type="button" class="size-btn text-center py-2 text-sm" onclick="selectSize(this, '{{ $item }}')">
                                         {{ $item }}
-                                    </div>
+                                    </button>
                                 @endforeach
                             @else
                                 <p class="text-sm text-red-500">Size information is not available.</p>
                             @endif
                         </div>
+                        <input type="hidden" id="selectedSize" name="size" value="">
                     </div>
                     
                     <!-- Quantity Selection -->
                     <div class="info-section">
                         <div class="flex justify-between items-center">
                             <div class="quantity-input">
-                                <button class="quantity-btn" onclick="decrementQuantity()">-</button>
+                                <button type="button" class="quantity-btn" onclick="decrementQuantity()">-</button>
                                 <div id="quantity" class="quantity-display">1</div>
-                                <button class="quantity-btn" onclick="incrementQuantity()">+</button>
+                                <button type="button" class="quantity-btn" onclick="incrementQuantity()">+</button>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Notify Button -->
+                    <!-- Notify Button or Order Button -->
                     <div class="mb-8">
-                        <button class="notify-btn">
-                            <i class="fas fa-bell"></i> Notify me when the product is available again
-                        </button>
+                        @if($product->stock > 0)
+                            <button id="orderButton" class="w-full bg-black text-white py-3 rounded-md text-sm hover:bg-gray-800 transition flex items-center justify-center gap-2" onclick="orderProduct()">
+                                <i class="fas fa-shopping-cart"></i> Pesan Sekarang
+                            </button>
+                        @else
+                            <button class="notify-btn">
+                                <i class="fas fa-bell"></i> Notify me when the product is available again
+                            </button>
+                        @endif
                     </div>
                     
                     <!-- Product Description -->
@@ -342,30 +424,6 @@
                         
                         <div class="bg-gray-50 p-4 rounded-md mb-6 border-l-4 border-gray-500">
                             <p class="text-sm font-bold">REFUND WILL BE APPLIED IF THERE IS A VIDEO PROOF OF UNBOXING AND IF THERE IS AN ERROR OR DAMAGED ITEM FROM US, THANK YOU FOR YOUR ATTENTION</p>
-                        </div>
-                        
-                        <!-- Shipping Information -->
-                        <div class="shipping-box">
-                            <h3 class="info-title border-b border-gray-200 pb-3 mb-4">Shipping</h3>
-                            <div class="flex justify-between items-center mb-4">
-                                <span class="font-medium">Shipped to:</span>
-                                <div class="relative w-1/2">
-                                    <select class="w-full border border-gray-300 rounded p-2 pr-8 appearance-none bg-white focus:border-gray-500 focus:outline-none">
-                                        <option>Choose Area</option>
-                                    </select>
-                                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                        <i class="fas fa-chevron-down text-gray-400"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center mb-4">
-                                <span class="font-medium">Weight:</span>
-                                <span>900g</span>
-                            </div>
-                            <div class="flex items-start bg-gray-50 p-3 rounded-md">
-                                <i class="fas fa-info-circle text-gray-500 mt-1 mr-2"></i>
-                                <span class="text-sm text-gray-600">Shipped within 24 hours<br>(After payment confirmation)</span>
-                            </div>
                         </div>
                         
                         <!-- Customer Service Button -->
@@ -460,9 +518,55 @@
             <img src="{{ asset('img/ekspedisi/lion.png') }}" alt="Shipping Method" class="h-12">
         </div>
     </div>
-</div>
+
+    <!-- Custom Alert Modal -->
+    <div id="customAlertOverlay" class="custom-alert-overlay">
+        <div class="custom-alert">
+            <div class="custom-alert-header">
+                <div><i class="fas fa-exclamation-circle"></i> Peringatan</div>
+                <button onclick="closeCustomAlert()" style="background: none; border: none; color: white; cursor: pointer;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="customAlertContent" class="custom-alert-content">
+                <!-- Alert Message Here -->
+            </div>
+            <div class="custom-alert-footer">
+                <button class="custom-alert-button" onclick="closeCustomAlert()">OK</button>
+            </div>
+        </div>
+    </div>
 
     <script>
+        // Check for pending order after login
+        document.addEventListener('DOMContentLoaded', function() {
+            // Periksa apakah ada pending order di session storage
+            const pendingOrder = sessionStorage.getItem('pendingOrder');
+            if (pendingOrder) {
+                const orderData = JSON.parse(pendingOrder);
+                
+                // Jika ini adalah halaman produk yang sama dengan yang disimpan
+                if (orderData.productSlug === '{{ $product->slug }}') {
+                    // Set ukuran yang dipilih sebelumnya
+                    if (orderData.size) {
+                        document.querySelectorAll('.size-btn').forEach(btn => {
+                            if (btn.innerText.trim() === orderData.size) {
+                                selectSize(btn, orderData.size);
+                            }
+                        });
+                    }
+                    
+                    // Set jumlah yang dipilih sebelumnya
+                    if (orderData.quantity && document.getElementById('quantity')) {
+                        document.getElementById('quantity').innerText = orderData.quantity;
+                    }
+                    
+                    // Hapus pending order dari session storage
+                    sessionStorage.removeItem('pendingOrder');
+                }
+            }
+        });
+
         // Product image gallery
         function changeImage(src, thumbnail) {
             const mainImage = document.getElementById('mainImage');
@@ -482,11 +586,27 @@
             thumbnail.classList.add('active');
         }
 
+        // Size selection
+        function selectSize(button, size) {
+            // Remove active class from all size buttons
+            document.querySelectorAll('.size-btn').forEach(btn => {
+                btn.classList.remove('bg-black', 'text-white');
+            });
+            
+            // Add active class to selected button
+            button.classList.add('bg-black', 'text-white');
+            
+            // Update hidden input with selected size
+            document.getElementById('selectedSize').value = size;
+        }
+
         // Quantity controls
         function incrementQuantity() {
             const quantityElement = document.getElementById('quantity');
             let quantity = parseInt(quantityElement.innerText);
-            if (quantity < 1) { // Maximum quantity is 1 as shown in the design
+            const maxQuantity = {{ $product->stock > 0 ? $product->stock : 0 }};
+            
+            if (quantity < maxQuantity) {
                 quantityElement.innerText = quantity + 1;
             }
         }
@@ -497,6 +617,70 @@
             if (quantity > 1) {
                 quantityElement.innerText = quantity - 1;
             }
+        }
+        
+        // Show custom alert function
+        function showCustomAlert(message) {
+            const overlay = document.getElementById('customAlertOverlay');
+            const content = document.getElementById('customAlertContent');
+            
+            content.textContent = message;
+            overlay.classList.add('active');
+            
+            // Add event listener to close when clicking outside
+            overlay.addEventListener('click', function(event) {
+                if (event.target === overlay) {
+                    closeCustomAlert();
+                }
+            });
+        }
+        
+        // Close custom alert function
+        function closeCustomAlert() {
+            const overlay = document.getElementById('customAlertOverlay');
+            overlay.classList.remove('active');
+        }
+        
+        // Order product
+        function orderProduct() {
+            const selectedSize = document.getElementById('selectedSize').value;
+            const quantity = parseInt(document.getElementById('quantity').innerText);
+            
+            if (!selectedSize) {
+                showCustomAlert('Silahkan pilih ukuran terlebih dahulu');
+                return;
+            }
+            
+            @auth
+                // Simpan data ke localStorage untuk sementara (dalam proyek nyata, ini akan dikirim ke server)
+                const orderData = {
+                    productId: {{ $product->id }},
+                    productName: "{{ $product->name }}",
+                    price: {{ intval(str_replace(',', '', str_replace('Rp ', '', $product->price))) }},
+                    size: selectedSize,
+                    quantity: quantity
+                };
+                
+                // Simpan data pesanan ke localStorage
+                localStorage.setItem('currentOrder', JSON.stringify(orderData));
+                
+                // Redirect ke halaman cart atau checkout
+                window.location.href = "{{ route('cart') }}";
+            @else
+                // Simpan data produk ke sessionStorage agar bisa diambil setelah login
+                const productData = {
+                    productId: {{ $product->id }},
+                    productSlug: "{{ $product->slug }}",
+                    size: selectedSize,
+                    quantity: quantity
+                };
+                
+                // Simpan data untuk digunakan setelah login
+                sessionStorage.setItem('pendingOrder', JSON.stringify(productData));
+                
+                // Redirect ke halaman login dengan intended URL kembali ke halaman produk ini
+                window.location.href = "{{ route('login') }}?redirect={{ url()->current() }}";
+            @endauth
         }
     </script>
 </x-app-layout> 

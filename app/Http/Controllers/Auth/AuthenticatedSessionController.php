@@ -28,6 +28,11 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Cek apakah ada parameter redirect
+        if ($request->has('redirect')) {
+            return redirect($request->redirect);
+        }
+
         return redirect('/');
     }
 
