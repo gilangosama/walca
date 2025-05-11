@@ -11,6 +11,11 @@
     <form method="POST" action="{{ route('login') }}" class="space-y-6 mx-2">
         @csrf
 
+        <!-- Hidden redirect field -->
+        @if(request()->has('redirect'))
+            <input type="hidden" name="redirect" value="{{ request()->redirect }}">
+        @endif
+
         <!-- Email Address -->
         <div class="relative">
             <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>

@@ -8,6 +8,11 @@
     <form method="POST" action="{{ route('register') }}" class="space-y-6 mx-2">
         @csrf
 
+        <!-- Hidden redirect field -->
+        @if(request()->has('redirect'))
+            <input type="hidden" name="redirect" value="{{ request()->redirect }}">
+        @endif
+
         <!-- Name -->
         <div class="relative">
             <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>

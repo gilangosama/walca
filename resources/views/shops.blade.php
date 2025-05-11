@@ -380,7 +380,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             <!-- Product 1 -->
                             @foreach ($products as $product)
-                                <a href="{{ route('product.detail', {{ $product->slug }}) }}"
+                                <a href="{{ route('product.detail', $product->slug) }}"
                                     class="product-item p-2">
                                     <div class="relative product-image-container">
                                         <div class="stok-badge">OUT OF STOCK</div>
