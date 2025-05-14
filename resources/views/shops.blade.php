@@ -407,14 +407,51 @@
             </div>
         </div>
 
-        <!-- Back to Top Button -->
-        <div id="backToTop" class="fixed bottom-8 right-8 hidden opacity-0 transition-opacity duration-300">
-            <a href="#"
-                class="bg-black text-white p-4 rounded-full shadow-lg hover:bg-gray-800 transition flex items-center justify-center"
-                style="width: 60px; height: 60px;">
-                <i class="fas fa-arrow-up"></i>
-            </a>
-        </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filter toggle for mobile
+            const filterBtn = document.getElementById('filterBtn');
+            const filterMenu = document.getElementById('filterMenu');
+            
+            filterBtn.addEventListener('click', function() {
+                filterMenu.classList.toggle('hidden');
+            });
+
+            // Initialize price range slider if it exists
+            const priceRange = document.getElementById('priceRange');
+            if (priceRange) {
+                const minPrice = document.getElementById('minPrice');
+                const maxPrice = document.getElementById('maxPrice');
+                
+                noUiSlider.create(priceRange, {
+                    start: [parseInt(minPrice.dataset.min) || 0, parseInt(maxPrice.dataset.max) || 1000000],
+                    connect: true,
+                    range: {
+                        'min': parseInt(minPrice.dataset.min) || 0,
+                        'max': parseInt(maxPrice.dataset.max) || 1000000
+                    },
+                    format: {
+                        to: function (value) {
+                            return Math.round(value);
+                        },
+                        from: function (value) {
+                            return Math.round(value);
+                        }
+                    }
+                });
+                
+                priceRange.noUiSlider.on('update', function (values, handle) {
+                    if (handle === 0) {
+                        minPrice.value = values[0];
+                        document.getElementById('displayMinPrice').textContent = new Intl.NumberFormat('id-ID').format(values[0]);
+                    } else {
+                        maxPrice.value = values[1];
+                        document.getElementById('displayMaxPrice').textContent = new Intl.NumberFormat('id-ID').format(values[1]);
+                    }
+                });
+            }
+        });
+    </script>
 </x-app-layout>
 
 <script>

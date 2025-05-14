@@ -40,6 +40,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // Admin routes
+    Route::middleware(['admin'])->prefix('admin')->group(function () {
+        Route::get('/chat-instructions', function () {
+            return view('admin.tawk-instructions');
+        })->name('admin.chat-instructions');
+    });
 });
 
 require __DIR__.'/auth.php';

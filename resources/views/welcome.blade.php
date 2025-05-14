@@ -95,41 +95,8 @@
         </div>
     </div>
 
-    <!-- Back to Top Button -->
-    <div id="backToTop" class="fixed bottom-8 right-8 hidden opacity-0 transition-opacity duration-300">
-        <a href="#" class="bg-black text-white p-4 rounded-full shadow-lg hover:bg-gray-800 transition flex items-center justify-center" style="width: 60px; height: 60px;">
-            <i class="fas fa-arrow-up"></i>
-        </a>
-    </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const backToTopBtn = document.getElementById('backToTop');
-
-            // Back to Top functionality
-            window.addEventListener('scroll', function() {
-                if (window.scrollY > 300) {
-                    backToTopBtn.classList.remove('hidden');
-                    setTimeout(() => {
-                        backToTopBtn.classList.remove('opacity-0');
-                    }, 50);
-                } else {
-                    backToTopBtn.classList.add('opacity-0');
-                    setTimeout(() => {
-                        backToTopBtn.classList.add('hidden');
-                    }, 300);
-                }
-            });
-
-            // Smooth scroll to top
-            backToTopBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-
             // Carousel functionality
             const carousel = document.getElementById('carousel');
             const prevBtn = document.getElementById('prevBtn');

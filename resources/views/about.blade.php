@@ -220,55 +220,56 @@
         </div>
     </div>
 
-    <!-- Back to Top Button -->
-    <div id="backToTop" class="fixed bottom-8 right-8 hidden opacity-0 transition-opacity duration-300">
-        <a href="#" class="bg-black text-white p-4 rounded-full shadow-lg hover:bg-gray-800 transition flex items-center justify-center" style="width: 50px; height: 50px;">
-            <i class="fas fa-arrow-up"></i>
-        </a>
-    </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const backToTopBtn = document.getElementById('backToTop');
-            const fadeElements = document.querySelectorAll('.fade-in');
-
-            // Back to Top functionality
-            window.addEventListener('scroll', function() {
-                if (window.scrollY > 300) {
-                    backToTopBtn.classList.remove('hidden');
-                    setTimeout(() => {
-                        backToTopBtn.classList.remove('opacity-0');
-                    }, 50);
-                } else {
-                    backToTopBtn.classList.add('opacity-0');
-                    setTimeout(() => {
-                        backToTopBtn.classList.add('hidden');
-                    }, 300);
-                }
+            // Testimonials carousel
+            const testimonialContainer = document.querySelector('.testimonial-container');
+            const testimonials = document.querySelectorAll('.testimonial');
+            const prevBtn = document.getElementById('testimonialPrev');
+            const nextBtn = document.getElementById('testimonialNext');
+            
+            let currentIndex = 0;
+            const testimonialCount = testimonials.length;
+            
+            function showTestimonial(index) {
+                currentIndex = index;
                 
-                // Check for elements to fade in
-                fadeElements.forEach(element => {
-                    const elementTop = element.getBoundingClientRect().top;
-                    const elementVisible = 150;
-                    
-                    if (elementTop < window.innerHeight - elementVisible) {
-                        element.classList.add('visible');
-                    }
-                });
+                if (window.innerWidth >= 768) {
+                    // On desktop, show 3 testimonials at once
+                    testimonialContainer.style.transform = `translateX(-${Math.floor(currentIndex / 3) * 100}%)`;
+                } else {
+                    // On mobile, show 1 testimonial at once
+                    testimonialContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+                }
+            }
+            
+            prevBtn.addEventListener('click', function() {
+                if (window.innerWidth >= 768) {
+                    // On desktop, move by groups of 3
+                    const newIndex = Math.max(0, Math.floor(currentIndex / 3) - 1) * 3;
+                    showTestimonial(newIndex);
+                } else {
+                    // On mobile, move one by one
+                    const newIndex = (currentIndex - 1 + testimonialCount) % testimonialCount;
+                    showTestimonial(newIndex);
+                }
             });
-
-            // Trigger initial check for elements in view
-            setTimeout(() => {
-                window.dispatchEvent(new Event('scroll'));
-            }, 300);
-
-            // Smooth scroll to top
-            backToTopBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
+            
+            nextBtn.addEventListener('click', function() {
+                if (window.innerWidth >= 768) {
+                    // On desktop, move by groups of 3
+                    const newIndex = Math.min(Math.floor((testimonialCount - 1) / 3), Math.floor(currentIndex / 3) + 1) * 3;
+                    showTestimonial(newIndex);
+                } else {
+                    // On mobile, move one by one
+                    const newIndex = (currentIndex + 1) % testimonialCount;
+                    showTestimonial(newIndex);
+                }
+            });
+            
+            // Responsive adjustment
+            window.addEventListener('resize', function() {
+                showTestimonial(currentIndex);
             });
         });
     </script>
