@@ -11,8 +11,15 @@ class OrderItem extends Model
         'product_id',
         'quantity',
         'price',
-        'subtotal',
+        'subtotal', // Added subtotal
     ];
+
+    protected static function booted()
+    {
+        static::saving(function ($orderItem) {
+            $orderItem->subtotal = $orderItem->quantity * $orderItem->price; // Auto-calculate subtotal
+        });
+    }
 
     public function order()
     {
