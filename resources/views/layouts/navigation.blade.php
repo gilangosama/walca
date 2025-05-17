@@ -11,12 +11,12 @@
         left: 0;
         width: 290px;
         height: 100%;
-        background-color: #fff;
+        background-color: #0a0a0a;
         z-index: 101;
         transform: translateX(-100%);
         transition: transform 0.3s ease-in-out;
         overflow-y: auto;
-        box-shadow: 0 0 15px rgba(0,0,0,0.15);
+        box-shadow: 0 0 15px rgba(0,0,0,0.35);
     }
     .sidebar.open {
         transform: translateX(0);
@@ -25,40 +25,43 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 20px;
-        border-bottom: 1px solid #f1f1f1;
+        padding: 25px 20px;
+        border-bottom: 1px solid #222222;
     }
     .sidebar-header .search-icon {
-        color: #333;
+        color: #ffffff;
         transition: color 0.2s;
     }
     .sidebar-header .search-icon:hover {
-        color: #666;
+        color: #999;
     }
     .sidebar-header .close-btn {
         font-size: 18px;
+        color: #ffffff;
         cursor: pointer;
         transition: transform 0.2s;
     }
     .sidebar-header .close-btn:hover {
         transform: rotate(90deg);
+        color: #999;
     }
     .sidebar-menu {
-        padding: 15px 0;
+        padding: 20px 0;
         display: flex;
         flex-direction: column;
     }
     .nav-item {
-        padding: 12px 20px;
-        transition: all 0.2s ease;
+        padding: 14px 25px;
+        transition: all 0.25s ease;
         position: relative;
-        font-weight: 500;
-        letter-spacing: 0.5px;
+        font-weight: 400;
+        letter-spacing: 1px;
         display: block;
+        color: #ffffff;
+        text-decoration: none;
     }
     .nav-item:hover, .nav-item.active {
-        background-color: #f7f7f7;
-        padding-left: 25px;
+        background-color: #1a1a1a;
     }
     .nav-item:after {
         content: '';
@@ -67,8 +70,8 @@
         top: 0;
         height: 100%;
         width: 0;
-        background-color: #000;
-        transition: width 0.2s;
+        background-color: #ffffff;
+        transition: width 0.25s;
     }
     .nav-item:hover:after, .nav-item.active:after {
         width: 3px;
@@ -79,9 +82,10 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.25);
+        background-color: rgba(0, 0, 0, 0.5);
         z-index: 100;
         display: none;
+        backdrop-filter: blur(3px);
     }
     .overlay.active {
         display: block;
@@ -103,8 +107,8 @@
     
     .hamburger-line {
         width: 25px;
-        height: 3px;
-        background-color: #000;
+        height: 2px;
+        background-color: #ffffff;
         display: block;
         transition: all 0.3s ease-in-out;
         margin: 3px 0;
@@ -112,7 +116,7 @@
     }
     
     .hamburger-btn:hover .hamburger-line {
-        background-color: #666;
+        background-color: #cccccc;
     }
     
     /* Mencegah konten bergeser ke kiri */
@@ -132,6 +136,70 @@
         width: 100%;
         transition: none !important;
     }
+
+    /* Navbar with black background */
+    .main-navbar {
+        background-color: #000000 !important;
+        border-bottom: none !important;
+        box-shadow: 0 1px 10px rgba(0,0,0,0.1);
+    }
+
+    .nav-icon {
+        color: #ffffff;
+        transition: color 0.2s, transform 0.2s;
+    }
+    
+    .nav-icon:hover {
+        color: #cccccc;
+        transform: scale(1.1);
+    }
+
+    /* Logo area styling */
+    .logo-container {
+        position: relative;
+    }
+
+    .logo-container::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 30px;
+        height: 2px;
+        background-color: #ffffff;
+        transition: width 0.3s;
+    }
+
+    .logo-container:hover::after {
+        width: 50px;
+    }
+
+    /* Style for navbar buttons */
+    .navbar-button {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+
+    .navbar-button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.3s, height 0.3s;
+        z-index: -1;
+    }
+
+    .navbar-button:hover::before {
+        width: 200%;
+        height: 200%;
+    }
 </style>
 
 <!-- Overlay for sidebar -->
@@ -146,17 +214,17 @@
         <span class="close-btn" id="closeSidebar">✕</span>
     </div>
     <nav class="sidebar-menu">
-        <a href="/" class="nav-item text-sm {{ request()->is('/') ? 'active' : '' }}">HOME</a>
-        <a href="{{ route('shops') }}" class="nav-item text-sm {{ request()->routeIs('shops') ? 'active' : '' }}">SHOPS</a>
-        <a href="{{ route('about') }}" class="nav-item text-sm {{ request()->routeIs('about') ? 'active' : '' }}">ABOUT US</a>
-        <a href="{{ route('lookbook') }}" class="nav-item text-sm {{ request()->routeIs('lookbook') ? 'active' : '' }}">LOOK BOOK</a>
-        <span class="nav-item text-sm text-gray-400">ARCHIVES - under maintenance</span>
+        <a href="/" class="nav-item text-sm uppercase {{ request()->is('/') ? 'active' : '' }}">Home</a>
+        <a href="{{ route('shops') }}" class="nav-item text-sm uppercase {{ request()->routeIs('shops') ? 'active' : '' }}">Shops</a>
+        <a href="{{ route('about') }}" class="nav-item text-sm uppercase {{ request()->routeIs('about') ? 'active' : '' }}">About Us</a>
+        <a href="{{ route('lookbook') }}" class="nav-item text-sm uppercase {{ request()->routeIs('lookbook') ? 'active' : '' }}">Look Book</a>
+        <span class="nav-item text-sm text-gray-400 uppercase">Archives - under maintenance</span>
         
         @auth
-        <form method="POST" action="{{ route('logout') }}" class="mt-4">
+        <form method="POST" action="{{ route('logout') }}" class="mt-6">
             @csrf
             <button type="submit" class="nav-item text-sm w-full text-left flex items-center">
-                <span>LOGOUT</span>
+                <span class="uppercase">Logout</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
@@ -166,32 +234,32 @@
     </nav>
 </div>
 
-<nav x-data="{ open: false, languageOpen: false, searchOpen: false }" class="fixed top-0 left-0 right-0 bg-white border-b border-gray-100 z-50">
+<nav x-data="{ open: false, languageOpen: false, searchOpen: false }" class="fixed top-0 left-0 right-0 main-navbar z-50">
     <!-- Primary Navigation Menu -->
     <div class="mx-auto px-2">
         <div class="flex justify-between h-16">
             <!-- Left Side - Hamburger Menu -->
             <div class="flex items-center">
-                <button id="openSidebar" class="hamburger-btn">
-                    <span class="hamburger-line"></span>
-                    <span class="hamburger-line"></span>
-                    <span class="hamburger-line"></span>
+                <button id="openSidebar" class="hamburger-btn navbar-button">
+                    <span class="hamburger-line bg-white"></span>
+                    <span class="hamburger-line bg-white"></span>
+                    <span class="hamburger-line bg-white"></span>
                 </button>
             </div>
 
             <!-- Logo (Centered) -->
             <div class="absolute left-1/2 transform -translate-x-1/2 flex items-center">
-                <a href="/">
-                    <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                <a href="/" class="logo-container">
+                    <x-application-logo class="block h-9 w-auto fill-current text-white" />
                 </a>
             </div>
 
             <!-- Right Side Navigation Items -->
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-4">
                 <!-- IDR Currency -->
                 <div class="hidden sm:flex items-center">
-                    <button @click="languageOpen = !languageOpen" class="flex items-center">
-                        <span class="text-sm font-medium">
+                    <button @click="languageOpen = !languageOpen" class="flex items-center navbar-button p-1">
+                        <span class="text-sm font-medium text-white">
                             <img src="{{ asset('img/indo-flag.jpg') }}" alt="ID Flag" class="inline-block h-4 w-6 mr-1 border border-gray-500"> IDR
                         </span>
                     </button>
@@ -199,8 +267,8 @@
 
                 <!-- Search Icon -->
                 <div class="flex items-center">
-                    <button @click="searchOpen = !searchOpen" class="p-1 focus:outline-none focus:ring-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <button @click="searchOpen = !searchOpen" class="p-1 focus:outline-none focus:ring-0 navbar-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                     </button>
@@ -208,24 +276,24 @@
 
                 <!-- Cart Icon -->
                 <div class="flex items-center">
-                    <a href="{{ route('cart') }}" class="p-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <a href="{{ route('cart') }}" class="p-1 navbar-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
                     </a>
                 </div>
 
                 <!-- User Icon -->
-                <div class="flex items-center">
+                <div class="flex items-center mr-2">
                     @auth
-                    <a href="{{ route('profile.edit') }}" class="p-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <a href="{{ route('profile.edit') }}" class="p-1 navbar-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                     </a>
                     @else
-                    <a href="{{ route('login') }}" class="p-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <a href="{{ route('login') }}" class="p-1 navbar-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                     </a>
@@ -238,352 +306,137 @@
     <!-- Language and Currency Dropdown Menu -->
     <div x-show="languageOpen" 
          @click.away="languageOpen = false" 
-         class="fixed top-16 right-0 bg-white shadow-lg p-6 rounded-bl-md z-60 w-72 border border-gray-100">
+         class="fixed top-16 right-0 bg-black shadow-lg p-6 rounded-bl-md z-60 w-72 border border-gray-800 text-white">
         
         <div class="mb-5">
-            <label class="block text-sm font-medium mb-2 text-gray-700">Sent to:</label>
+            <label class="block text-sm font-medium mb-2">Sent to:</label>
             <div x-data="{ open: false, selected: 'Indonesia' }">
                 <div 
                     @click="open = !open" 
-                    class="relative w-full border border-gray-300 rounded-md py-3 px-4 bg-white focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm cursor-pointer flex justify-between items-center"
+                    class="relative w-full border border-gray-700 rounded-md py-3 px-4 bg-black focus:outline-none focus:ring-2 focus:ring-white focus:border-gray-500 text-sm cursor-pointer flex justify-between items-center"
                 >
                     <span x-text="selected"></span>
-                    <svg class="h-4 w-4 text-gray-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                     </svg>
                 </div>
                 <div 
                     x-show="open" 
                     @click.away="open = false"
-                    class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-sm"
+                    class="absolute mt-1 w-full bg-black border border-gray-700 rounded-md shadow-lg z-10 max-h-60 overflow-auto"
                 >
-                    <a @click="selected = 'Indonesia'; open = false" class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Indonesia</a>
-                    <a @click="selected = 'Malaysia'; open = false" class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Malaysia</a>
-                    <a @click="selected = 'Singapore'; open = false" class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Singapore</a>
+                    <div @click="selected = 'Indonesia'; open = false" class="px-4 py-2 cursor-pointer hover:bg-gray-800">Indonesia</div>
+                    <div @click="selected = 'Singapore'; open = false" class="px-4 py-2 cursor-pointer hover:bg-gray-800">Singapore</div>
+                    <div @click="selected = 'Malaysia'; open = false" class="px-4 py-2 cursor-pointer hover:bg-gray-800">Malaysia</div>
                 </div>
             </div>
         </div>
         
-        <div class="mb-5">
-            <label class="block text-sm font-medium mb-2 text-gray-700">Language:</label>
-            <div x-data="{ open: false, selected: 'Indonesia' }">
-                <div 
-                    @click="open = !open" 
-                    class="relative w-full border border-gray-300 rounded-md py-3 px-4 bg-white focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm cursor-pointer flex justify-between items-center"
-                >
-                    <span x-text="selected"></span>
-                    <svg class="h-4 w-4 text-gray-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div 
-                    x-show="open" 
-                    @click.away="open = false"
-                    class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-sm"
-                >
-                    <a @click="selected = 'Indonesia'; open = false" class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Indonesia</a>
-                    <a @click="selected = 'English'; open = false" class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">English</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="mb-6">
-            <label class="block text-sm font-medium mb-2 text-gray-700">Currency:</label>
+        <div>
+            <label class="block text-sm font-medium mb-2">Currency:</label>
             <div x-data="{ open: false, selected: 'IDR' }">
                 <div 
                     @click="open = !open" 
-                    class="relative w-full border border-gray-300 rounded-md py-3 px-4 bg-white focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-sm cursor-pointer flex justify-between items-center"
+                    class="relative w-full border border-gray-700 rounded-md py-3 px-4 bg-black focus:outline-none focus:ring-2 focus:ring-white focus:border-gray-500 text-sm cursor-pointer flex justify-between items-center"
                 >
                     <span x-text="selected"></span>
-                    <svg class="h-4 w-4 text-gray-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                     </svg>
                 </div>
                 <div 
                     x-show="open" 
                     @click.away="open = false"
-                    class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-sm"
+                    class="absolute mt-1 w-full bg-black border border-gray-700 rounded-md shadow-lg z-10 max-h-60 overflow-auto"
                 >
-                    <a @click="selected = 'IDR'; open = false" class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">IDR</a>
-                    <a @click="selected = 'USD'; open = false" class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">USD</a>
-                    <a @click="selected = 'SGD'; open = false" class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">SGD</a>
+                    <div @click="selected = 'IDR'; open = false" class="px-4 py-2 cursor-pointer hover:bg-gray-800">IDR</div>
+                    <div @click="selected = 'USD'; open = false" class="px-4 py-2 cursor-pointer hover:bg-gray-800">USD</div>
+                    <div @click="selected = 'SGD'; open = false" class="px-4 py-2 cursor-pointer hover:bg-gray-800">SGD</div>
                 </div>
             </div>
         </div>
-        
-        <button class="w-full bg-black text-white py-3 px-4 rounded-md hover:bg-gray-900 transition duration-150 ease-in-out text-sm font-medium">
-            Save
-        </button>
     </div>
 
-    <!-- Search Popup -->
+    <!-- Search Panel -->
     <div x-show="searchOpen" 
          @click.away="searchOpen = false" 
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-50 flex flex-col items-center backdrop-blur-sm bg-black/40">
-        
-        <div class="bg-white w-full max-w-4xl shadow-2xl overflow-hidden transform transition-all" 
-             x-transition:enter="ease-out duration-300"
-             x-transition:enter-start="opacity-0 -translate-y-10"
-             x-transition:enter-end="opacity-100 translate-y-0"
-             x-transition:leave="ease-in duration-200"
-             x-transition:leave-start="opacity-100 translate-y-0"
-             x-transition:leave-end="opacity-0 -translate-y-10">
-            
-            <div class="relative p-5 border-b border-gray-100">
-                <div class="flex items-center">
-                    <div class="relative flex-grow">
-                        <input 
-                            type="text" 
-                            placeholder="Cari Produk Kami" 
-                            class="w-full pl-5 pr-10 py-4 text-base border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
-                            @keydown.escape="searchOpen = false"
-                        >
-                        <button class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-black transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+         class="fixed top-16 left-0 right-0 bg-black shadow-lg p-6 z-60 border-b border-gray-800">
+        <div class="container mx-auto max-w-4xl">
+            <div class="flex items-center mb-4">
+                <h2 class="text-xl font-medium text-white">Search</h2>
+                <button @click="searchOpen = false" class="ml-auto text-gray-300 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
                         </button>
                     </div>
-                    <button @click="searchOpen = false" class="ml-4 p-2 text-gray-400 hover:text-black transition-colors focus:outline-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <form action="{{ route('shops') }}" method="GET">
+                <div class="relative">
+                    <input type="text" name="search" placeholder="Search for products..." class="w-full bg-transparent border-b border-gray-600 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-white">
+                    <button type="submit" class="absolute right-0 top-0 h-full px-4 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </button>
                 </div>
-            </div>
-            
-            <div class="p-6">
-                <div class="mb-8">
-                    <h3 class="text-base font-medium mb-4">Pencarian Populer</h3>
+            </form>
+            <div class="mt-6">
+                <h3 class="text-sm text-gray-400 uppercase mb-2">Popular Searches:</h3>
                     <div class="flex flex-wrap gap-2">
-                        <a href="#" class="px-5 py-2 bg-black text-white text-sm rounded-full hover:bg-gray-800 transition-all duration-200 shadow-sm hover:shadow transform hover:-translate-y-0.5">hoodie</a>
-                        <a href="#" class="px-5 py-2 bg-black text-white text-sm rounded-full hover:bg-gray-800 transition-all duration-200 shadow-sm hover:shadow transform hover:-translate-y-0.5">sully</a>
-                        <a href="#" class="px-5 py-2 bg-black text-white text-sm rounded-full hover:bg-gray-800 transition-all duration-200 shadow-sm hover:shadow transform hover:-translate-y-0.5">basic</a>
-                        <a href="#" class="px-5 py-2 bg-black text-white text-sm rounded-full hover:bg-gray-800 transition-all duration-200 shadow-sm hover:shadow transform hover:-translate-y-0.5">half</a>
-                        <a href="#" class="px-5 py-2 bg-black text-white text-sm rounded-full hover:bg-gray-800 transition-all duration-200 shadow-sm hover:shadow transform hover:-translate-y-0.5">boxy</a>
-                        <a href="#" class="px-5 py-2 bg-black text-white text-sm rounded-full hover:bg-gray-800 transition-all duration-200 shadow-sm hover:shadow transform hover:-translate-y-0.5">bedstar</a>
-                        <a href="#" class="px-5 py-2 bg-black text-white text-sm rounded-full hover:bg-gray-800 transition-all duration-200 shadow-sm hover:shadow transform hover:-translate-y-0.5">work</a>
-                        <a href="#" class="px-5 py-2 bg-black text-white text-sm rounded-full hover:bg-gray-800 transition-all duration-200 shadow-sm hover:shadow transform hover:-translate-y-0.5">pants</a>
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <h3 class="text-base font-medium mb-4">Baru Dilihat</h3>
-                    <div class="relative px-4">
-                        <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
-                            <!-- Product 1 -->
-                            <div class="group relative">
-                                <div class="relative overflow-hidden rounded-lg">
-                                    <span class="absolute top-2 left-2 z-10 bg-white px-2 py-1 text-xs font-bold">Stok Habis</span>
-                                    <div class="aspect-square bg-gray-100 overflow-hidden">
-                                        <img src="{{ asset('img/1.jpg') }}" alt="Product" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    </div>
-                                    <button class="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-gray-500 hover:text-red-500 transition-all duration-300 hover:bg-white">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="mt-3">
-                                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-black transition-colors">BOXY TEE CHAMBREDELAVAIN</h3>
-                                    <p class="text-sm font-semibold mt-1 text-gray-900">Rp 240,000</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Product 2 -->
-                            <div class="group relative">
-                                <div class="relative overflow-hidden rounded-lg">
-                                    <span class="absolute top-2 left-2 z-10 bg-white px-2 py-1 text-xs font-bold">Stok Habis</span>
-                                    <div class="aspect-square bg-gray-100 overflow-hidden">
-                                        <img src="{{ asset('img/2.jpg') }}" alt="Product" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    </div>
-                                    <button class="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-gray-500 hover:text-red-500 transition-all duration-300 hover:bg-white">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="mt-3">
-                                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-black transition-colors">Oversized tee Chambredelavain</h3>
-                                    <p class="text-sm font-semibold mt-1 text-gray-900">Rp 199,000</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Product 3 -->
-                            <div class="group relative">
-                                <div class="relative overflow-hidden rounded-lg">
-                                    <span class="absolute top-2 left-2 z-10 bg-white px-2 py-1 text-xs font-bold">Stok Habis</span>
-                                    <div class="aspect-square bg-gray-100 overflow-hidden">
-                                        <img src="{{ asset('img/3.jpg') }}" alt="Product" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    </div>
-                                    <button class="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-gray-500 hover:text-red-500 transition-all duration-300 hover:bg-white">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="mt-3">
-                                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-black transition-colors">BOXY HOODIE CHAMBREDELAVAIN</h3>
-                                    <p class="text-sm font-semibold mt-1 text-gray-900">Rp 465,000</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Product 4 -->
-                            <div class="group relative hidden md:block">
-                                <div class="relative overflow-hidden rounded-lg">
-                                    <span class="absolute top-2 left-2 z-10 bg-white px-2 py-1 text-xs font-bold">Stok Habis</span>
-                                    <div class="aspect-square bg-gray-100 overflow-hidden">
-                                        <img src="{{ asset('img/1.jpg') }}" alt="Product" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    </div>
-                                    <button class="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-gray-500 hover:text-red-500 transition-all duration-300 hover:bg-white">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="mt-3">
-                                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-black transition-colors">Hat Chambredelavain</h3>
-                                    <p class="text-sm font-semibold mt-1 text-gray-900">Rp 180,000</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Product 5 -->
-                            <div class="group relative hidden md:block">
-                                <div class="relative overflow-hidden rounded-lg">
-                                    <span class="absolute top-2 left-2 z-10 bg-white px-2 py-1 text-xs font-bold">Stok Habis</span>
-                                    <div class="aspect-square bg-gray-100 overflow-hidden">
-                                        <img src="{{ asset('img/2.jpg') }}" alt="Product" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    </div>
-                                    <button class="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-gray-500 hover:text-red-500 transition-all duration-300 hover:bg-white">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="mt-3">
-                                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-black transition-colors">Oversized tee Chambredelavain</h3>
-                                    <p class="text-sm font-semibold mt-1 text-gray-900">Rp 199,000</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Navigation Arrows -->
-                        <button class="absolute -left-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2.5 shadow-md hover:shadow-lg z-10 transition-all duration-200 hover:bg-gray-50 focus:outline-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                            </svg>
-                        </button>
-                        <button class="absolute -right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2.5 shadow-md hover:shadow-lg z-10 transition-all duration-200 hover:bg-gray-50 focus:outline-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </button>
-                    </div>
+                    <a href="{{ route('shops', ['category' => 'tshirt']) }}" class="px-3 py-1 bg-gray-800 text-white text-sm rounded-md hover:bg-gray-700">T-Shirts</a>
+                    <a href="{{ route('shops', ['category' => 'hoodie']) }}" class="px-3 py-1 bg-gray-800 text-white text-sm rounded-md hover:bg-gray-700">Hoodies</a>
+                    <a href="{{ route('shops', ['category' => 'jacket']) }}" class="px-3 py-1 bg-gray-800 text-white text-sm rounded-md hover:bg-gray-700">Jackets</a>
+                    <a href="{{ route('shops', ['category' => 'accessories']) }}" class="px-3 py-1 bg-gray-800 text-white text-sm rounded-md hover:bg-gray-700">Accessories</a>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('orders')" :active="request()->routeIs('orders')">
-                {{ __('Orders') }}
-            </x-responsive-nav-link>
-        </div>
-
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            @auth
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
-
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
-            @endauth
         </div>
     </div>
 </nav>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', () => {
         const sidebar = document.getElementById('sidebar');
-        const openSidebar = document.getElementById('openSidebar');
-        const closeSidebar = document.getElementById('closeSidebar');
+        const openBtn = document.getElementById('openSidebar');
+        const closeBtn = document.getElementById('closeSidebar');
         const overlay = document.getElementById('overlay');
-        
-        // Track saat sidebar terbuka/tutup
-        let isSidebarOpen = false;
-        
-        openSidebar.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // Catat lebar scrollbar
-            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-            document.documentElement.style.setProperty('--scrollbar-width', scrollbarWidth + 'px');
-            
+        const body = document.body;
+
+        if (openBtn) {
+            openBtn.addEventListener('click', () => {
             sidebar.classList.add('open');
             overlay.classList.add('active');
-            document.body.classList.add('sidebar-open');
-            
-            // Tandai sidebar sedang terbuka
-            isSidebarOpen = true;
-        });
-
-        function closeSidebarHandler(e) {
-            if (e) {
-                e.stopPropagation();
-            }
-            
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-            document.body.classList.remove('sidebar-open');
-            
-            // Reset scrollbar compensation
-            document.body.style.paddingRight = '';
-            
-            // Tandai sidebar sudah tertutup
-            isSidebarOpen = false;
+                body.classList.add('sidebar-open');
+            });
         }
 
-        closeSidebar.addEventListener('click', closeSidebarHandler);
-        overlay.addEventListener('click', closeSidebarHandler);
-        
-        // Tutup sidebar ketika item menu diklik
-        const navItems = document.querySelectorAll('.nav-item');
-        navItems.forEach(item => {
-            item.addEventListener('click', closeSidebarHandler);
-        });
-        
-        // Mencegah pergeseran konten saat resize window
-        window.addEventListener('resize', function() {
-            if (isSidebarOpen) {
-                const newScrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-                document.documentElement.style.setProperty('--scrollbar-width', newScrollbarWidth + 'px');
-            }
-        });
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+                body.classList.remove('sidebar-open');
+            });
+        }
+
+        if (overlay) {
+            overlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+                body.classList.remove('sidebar-open');
+            });
+        }
+
+        // Tambahkan efek smooth scroll untuk logo
+        const logoContainer = document.querySelector('.logo-container');
+        if (logoContainer) {
+            logoContainer.addEventListener('click', (e) => {
+                if (e.currentTarget.getAttribute('href') === '/') {
+                    e.preventDefault();
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        }
     });
 </script>

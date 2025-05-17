@@ -17,12 +17,12 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-black">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
             @isset($header)
-                <header class="bg-white shadow">
+                <header class="bg-black shadow">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
@@ -74,6 +74,18 @@
                             opacity: 0 !important;
                             pointer-events: none !important;
                         }
+                        
+                        /* Invert warna icon */
+                        .tawk-min-container .tawk-button {
+                            filter: invert(1) !important;
+                        }
+                        
+                        /* Invert warna icon chat */
+                        .tawk-min-container .tawk-button-icon, 
+                        .tawk-chat-button-image, 
+                        #tawkchat-minified-box {
+                            filter: invert(1) !important;
+                        }
                     `;
                     document.head.appendChild(style);
                     
@@ -115,6 +127,17 @@
                 s1.charset='UTF-8';
                 s1.setAttribute('crossorigin','*');
                 s0.parentNode.insertBefore(s1,s0);
+                
+                // Tambahkan CSS untuk icon chat setelah script dimuat
+                setTimeout(function() {
+                    var style = document.createElement('style');
+                    style.innerHTML = `
+                        #tawkchat-minified-container, #tawkchat-minified-wrapper {
+                            filter: invert(1) !important;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }, 1000);
             })();
         @else
             // Script untuk pengguna yang belum login
@@ -122,7 +145,7 @@
                 // Buat tombol chat yang akan mengarahkan ke halaman login
                 var chatButton = document.createElement('div');
                 chatButton.innerHTML = `
-                    <div id="login-chat-btn" style="position: fixed; bottom: 80px; right: 20px; background-color: #000; color: white; 
+                    <div id="login-chat-btn" style="position: fixed; bottom: 80px; right: 20px; background-color: #fff; color: black; 
                         border-radius: 50%; width: 60px; height: 60px; display: flex; justify-content: center; 
                         align-items: center; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" viewBox="0 0 24 24">
@@ -140,16 +163,16 @@
                         <div id="login-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
                             background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; 
                             align-items: center; z-index: 2000;">
-                            <div style="background: white; padding: 20px; border-radius: 8px; max-width: 400px; width: 100%;">
+                            <div style="background: #111; color: white; padding: 20px; border-radius: 8px; max-width: 400px; width: 100%; border: 1px solid #333;">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                                     <h3 style="margin: 0; font-size: 18px; font-weight: bold;">Login untuk Mengobrol</h3>
-                                    <button id="close-modal" style="background: none; border: none; cursor: pointer; font-size: 20px;">&times;</button>
+                                    <button id="close-modal" style="background: none; border: none; cursor: pointer; font-size: 20px; color: white;">&times;</button>
                                 </div>
                                 <p style="margin-bottom: 20px;">Untuk mengobrol dengan customer service kami, silakan login terlebih dahulu.</p>
-                                <a href="{{ route('login') }}" style="display: block; background-color: #000; color: white; text-align: center; 
+                                <a href="{{ route('login') }}" style="display: block; background-color: #fff; color: black; text-align: center; 
                                     padding: 10px; border-radius: 4px; text-decoration: none; font-weight: bold;">Login Sekarang</a>
                                 <p style="margin-top: 15px; font-size: 14px; text-align: center;">
-                                    Belum punya akun? <a href="{{ route('register') }}" style="color: #000; text-decoration: underline;">Daftar</a>
+                                    Belum punya akun? <a href="{{ route('register') }}" style="color: #fff; text-decoration: underline;">Daftar</a>
                                 </p>
                             </div>
                         </div>

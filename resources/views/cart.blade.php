@@ -3,40 +3,183 @@
     <style>
         body {
             font-family: 'Roboto Condensed', sans-serif;
+            background: linear-gradient(45deg, #000, #111);
+            color: white;
         }
+
+        .cart-container {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
         .cart-item {
             transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem 0;
         }
+
         .cart-item:hover {
-            background-color: #f9f9f9;
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
         }
+
+        .cart-header {
+            color: rgba(255, 255, 255, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+        }
+
+        .product-details {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .product-name {
+            color: white;
+            font-weight: 600;
+        }
+
+        .product-size {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .product-price {
+            color: white;
+            font-weight: 600;
+        }
+
         .quantity-btn {
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid #e5e5e5;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
         }
+
         .quantity-btn:hover {
-            background-color: #f0f0f0;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
+
+        .quantity-input {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 50px !important;
+            text-align: center;
+        }
+
         .remove-btn {
-            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            background: rgba(255, 255, 255, 0.1);
         }
+
         .remove-btn:hover {
-            color: #ff0000;
+            color: #ff4444;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .continue-shopping {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .continue-shopping:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .order-summary {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            color: white;
+        }
+
+        .checkout-btn {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: black;
+            font-weight: 600;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            width: 100%;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .checkout-btn.disabled {
+            background: linear-gradient(135deg, #808080, #A9A9A9);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .payment-methods {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .payment-methods img {
+            transition: all 0.3s ease;
+            filter: grayscale(100%) brightness(1.2);
+            opacity: 0.7;
+        }
+
+        .payment-methods img:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: translateY(-3px);
+        }
+
+        .product-image {
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .product-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
     </style>
 
-    <!-- Content Container with padding for fixed header -->
-    <div class="bg-white pt-16">
+    <!-- Content Container -->
+    <div class="pt-16">
         <!-- Page Title -->
-        <div class="bg-gray-100 py-6 border-b border-gray-200">
+        <div class="bg-black bg-opacity-50 py-6 border-b border-gray-800">
             <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <h1 class="text-2xl font-medium text-gray-900">Shopping Cart</h1>
+                <h1 class="text-2xl font-medium text-white">Keranjang Belanja</h1>
             </div>
         </div>
 
@@ -44,136 +187,61 @@
         <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
             <div class="flex flex-col lg:flex-row gap-8">
                 <!-- Cart Items -->
-                <div class="lg:w-2/3">
-                    <!-- Cart Header (Desktop only) -->
-                    <div class="hidden md:grid md:grid-cols-12 gap-4 pb-4 border-b border-gray-200 text-sm text-gray-500">
-                        <div class="md:col-span-6">Product</div>
-                        <div class="md:col-span-2 text-center">Price</div>
-                        <div class="md:col-span-2 text-center">Quantity</div>
+                <div class="lg:w-2/3 cart-container">
+                    <!-- Cart Header -->
+                    <div class="hidden md:grid md:grid-cols-12 gap-4 cart-header">
+                        <div class="md:col-span-6">Produk</div>
+                        <div class="md:col-span-2 text-center">Harga</div>
+                        <div class="md:col-span-2 text-center">Jumlah</div>
                         <div class="md:col-span-2 text-center">Total</div>
                     </div>
 
-                    <!-- Cart Items List -->
-                    <div class="divide-y divide-gray-200">
-                        <!-- Item 1 -->
-                        <div class="cart-item py-6 md:grid md:grid-cols-12 md:gap-4 md:items-center">
-                            <div class="md:col-span-6 flex items-start space-x-4">
-                                <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                    <img src="{{ asset('img/product1.jpg') }}" alt="CHMB Basic White Shirt" class="h-full w-full object-cover object-center">
-                                </div>
-                                <div class="flex flex-col">
-                                    <h3 class="text-base font-medium text-gray-900">CHMB Basic White Shirt</h3>
-                                    <p class="mt-1 text-sm text-gray-500">White / XL</p>
-                                    <button class="remove-btn mt-2 text-sm text-gray-500 flex items-center md:hidden">
-                                        <i class="fas fa-trash mr-1"></i> Delete
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="md:col-span-2 text-center mt-4 md:mt-0">
-                                <p class="text-sm font-medium text-gray-900">Rp 249.000</p>
-                            </div>
-                            <div class="md:col-span-2 flex justify-center mt-4 md:mt-0">
-                                <div class="flex items-center">
-                                    <button class="quantity-btn rounded-l-md">
-                                        <i class="fas fa-minus text-xs"></i>
-                                    </button>
-                                    <input type="text" value="1" class="w-10 h-30px text-center border-t border-b border-gray-300 text-sm" readonly>
-                                    <button class="quantity-btn rounded-r-md">
-                                        <i class="fas fa-plus text-xs"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="md:col-span-2 text-center mt-4 md:mt-0">
-                                <p class="text-sm font-medium text-gray-900">Rp 249.000</p>
-                                <button class="remove-btn hidden md:inline-block text-sm text-gray-500 mt-2">
-                                    <i class="fas fa-trash mr-1"></i> Delete
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Item 2 -->
-                        <div class="cart-item py-6 md:grid md:grid-cols-12 md:gap-4 md:items-center">
-                            <div class="md:col-span-6 flex items-start space-x-4">
-                                <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                    <img src="{{ asset('img/product2.jpg') }}" alt="CHMB Comfort Hoodie" class="h-full w-full object-cover object-center">
-                                </div>
-                                <div class="flex flex-col">
-                                    <h3 class="text-base font-medium text-gray-900">CHMB Comfort Hoodie</h3>
-                                    <p class="mt-1 text-sm text-gray-500">Off-White / L</p>
-                                    <button class="remove-btn mt-2 text-sm text-gray-500 flex items-center md:hidden">
-                                        <i class="fas fa-trash mr-1"></i> Delete
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="md:col-span-2 text-center mt-4 md:mt-0">
-                                <p class="text-sm font-medium text-gray-900">Rp 399.000</p>
-                            </div>
-                            <div class="md:col-span-2 flex justify-center mt-4 md:mt-0">
-                                <div class="flex items-center">
-                                    <button class="quantity-btn rounded-l-md">
-                                        <i class="fas fa-minus text-xs"></i>
-                                    </button>
-                                    <input type="text" value="1" class="w-10 h-30px text-center border-t border-b border-gray-300 text-sm" readonly>
-                                    <button class="quantity-btn rounded-r-md">
-                                        <i class="fas fa-plus text-xs"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="md:col-span-2 text-center mt-4 md:mt-0">
-                                <p class="text-sm font-medium text-gray-900">Rp 399.000</p>
-                                <button class="remove-btn hidden md:inline-block text-sm text-gray-500 mt-2">
-                                    <i class="fas fa-trash mr-1"></i> Delete
-                                </button>
-                            </div>
-                        </div>
+                    <div class="divide-y divide-gray-800">
+                        <!-- Cart items will be dynamically inserted here -->
                     </div>
 
                     <!-- Continue Shopping -->
                     <div class="mt-8">
-                        <a href="/shops" class="text-sm font-medium text-black flex items-center">
+                        <a href="/shops" class="continue-shopping">
                             <i class="fas fa-arrow-left mr-2"></i>
-                            Continue Shopping
+                            Lanjutkan Belanja
                         </a>
                     </div>
                 </div>
 
                 <!-- Order Summary -->
-                <div class="lg:w-1/3 mt-8 lg:mt-0">
-                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                        <h2 class="text-lg font-medium text-gray-900 mb-6">Order Summary</h2>
+                <div class="lg:w-1/3">
+                    <div class="order-summary">
+                        <h2 class="text-xl font-medium text-white mb-6">Ringkasan Pesanan</h2>
                         
                         <div class="space-y-4">
                             <div class="flex justify-between">
-                                <p class="text-sm text-gray-600">Subtotal</p>
-                                <p class="text-sm font-medium text-gray-900 order-summary-subtotal">Rp 648.000</p>
+                                <p class="text-gray-300">Subtotal</p>
+                                <p class="font-medium text-white order-summary-subtotal">Rp 0</p>
                             </div>
                             <div class="flex justify-between">
-                                <p class="text-sm text-gray-600">Shipping</p>
-                                <p class="text-sm font-medium text-gray-900">Calculated at checkout</p>
+                                <p class="text-gray-300">Pengiriman</p>
+                                <p class="font-medium text-white">Dihitung saat checkout</p>
+                            </div>
+                            
+                            <div class="border-t border-gray-700 my-4"></div>
+                        
+                            <div class="flex justify-between">
+                                <p class="text-lg font-medium text-white">Total</p>
+                                <p class="text-lg font-medium text-white order-summary-total">Rp 0</p>
                             </div>
                         </div>
                         
-                        <div class="border-t border-gray-200 mt-6 pt-6">
-                            <div class="flex justify-between">
-                                <p class="text-base font-medium text-gray-900">Total</p>
-                                <p class="text-base font-medium text-gray-900 order-summary-total">Rp 648.000</p>
-                            </div>
-                        </div>
-                        
-                        <a href="{{ route('checkout') }}" id="checkoutButton" class="block text-center mt-6 w-full bg-black py-3 px-4 rounded-md text-sm font-medium text-white hover:bg-gray-900 transition duration-150 ease-in-out">
-                            Continue to Checkout
-                        </a>
+                        <button id="checkoutButton" class="checkout-btn w-full mt-6">
+                            Lanjut ke Pembayaran
+                        </button>
                     </div>
 
                     <!-- Payment Methods -->
-                    <div class="mt-6">
-                        <h3 class="text-sm font-medium text-gray-900 mb-4">We Accept:</h3>
-                        <div class="flex flex-wrap gap-2">
-                            <img src="{{ asset('img/bayar/SVG.png') }}" alt="Payment Method" class="h-6">
-                            <img src="{{ asset('img/bayar/SVG-1.png') }}" alt="Payment Method" class="h-6">
-                            <img src="{{ asset('img/bayar/SVG-2.png') }}" alt="Payment Method" class="h-6">
-                            <img src="{{ asset('img/bayar/SVG-3.png') }}" alt="Payment Method" class="h-6">
-                            <img src="{{ asset('img/bayar/SVG-4.png') }}" alt="Payment Method" class="h-6">
+                    <div class="payment-methods">
+                        <h3 class="text-sm font-medium text-white mb-4">Metode Pembayaran:</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <!-- Payment method images -->
                         </div>
                     </div>
                 </div>
@@ -187,7 +255,7 @@
             const currentOrder = JSON.parse(localStorage.getItem('currentOrder'));
             if (currentOrder) {
                 // Kosongkan cart container terlebih dahulu
-                const cartContainer = document.querySelector('.divide-y.divide-gray-200');
+                const cartContainer = document.querySelector('.divide-y.divide-gray-800');
                 cartContainer.innerHTML = '';
                 
                 // Format harga
@@ -204,35 +272,35 @@
                 const cartItemHTML = `
                     <div class="cart-item py-6 md:grid md:grid-cols-12 md:gap-4 md:items-center">
                         <div class="md:col-span-6 flex items-start space-x-4">
-                            <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                            <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-700">
                                 <img src="{{ asset('img/1.jpg') }}" alt="${currentOrder.productName}" class="h-full w-full object-cover object-center">
                             </div>
-                            <div class="flex flex-col">
-                                <h3 class="text-base font-medium text-gray-900">${currentOrder.productName}</h3>
-                                <p class="mt-1 text-sm text-gray-500">${currentOrder.size}</p>
-                                <button class="remove-btn mt-2 text-sm text-gray-500 flex items-center md:hidden" onclick="removeCartItem()">
-                                    <i class="fas fa-trash mr-1"></i> Delete
+                            <div class="flex flex-col product-details">
+                                <h3 class="product-name">${currentOrder.productName}</h3>
+                                <p class="mt-1 product-size">${currentOrder.size}</p>
+                                <button class="remove-btn mt-2 text-sm flex items-center md:hidden" onclick="removeCartItem()">
+                                    <i class="fas fa-trash mr-1"></i> Hapus
                                 </button>
                             </div>
                         </div>
                         <div class="md:col-span-2 text-center mt-4 md:mt-0">
-                            <p class="text-sm font-medium text-gray-900">${formatter.format(currentOrder.price)}</p>
+                            <p class="product-price">${formatter.format(currentOrder.price)}</p>
                         </div>
                         <div class="md:col-span-2 flex justify-center mt-4 md:mt-0">
                             <div class="flex items-center">
                                 <button class="quantity-btn rounded-l-md" onclick="updateQuantity(-1)">
                                     <i class="fas fa-minus text-xs"></i>
                                 </button>
-                                <input type="text" value="${currentOrder.quantity}" class="w-10 h-30px text-center border-t border-b border-gray-300 text-sm quantity-input" readonly>
+                                <input type="text" value="${currentOrder.quantity}" class="quantity-input h-[35px]" readonly>
                                 <button class="quantity-btn rounded-r-md" onclick="updateQuantity(1)">
                                     <i class="fas fa-plus text-xs"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="md:col-span-2 text-center mt-4 md:mt-0">
-                            <p class="item-total text-sm font-medium text-gray-900">${formatter.format(totalPrice)}</p>
-                            <button class="remove-btn hidden md:inline-block text-sm text-gray-500 mt-2" onclick="removeCartItem()">
-                                <i class="fas fa-trash mr-1"></i> Delete
+                            <p class="item-total product-price">${formatter.format(totalPrice)}</p>
+                            <button class="remove-btn hidden md:inline-flex items-center mt-2" onclick="removeCartItem()">
+                                <i class="fas fa-trash mr-1"></i> Hapus
                             </button>
                         </div>
                     </div>
@@ -250,7 +318,7 @@
                 });
             } else {
                 // Jika tidak ada item di cart
-                const cartContainer = document.querySelector('.divide-y.divide-gray-200');
+                const cartContainer = document.querySelector('.divide-y.divide-gray-800');
                 cartContainer.innerHTML = `
                     <div class="py-6 text-center">
                         <p class="text-gray-500">Keranjang belanja Anda kosong.</p>
@@ -333,7 +401,7 @@
                     });
                     
                     // Tampilkan pesan keranjang kosong
-                    const cartContainer = document.querySelector('.divide-y.divide-gray-200');
+                    const cartContainer = document.querySelector('.divide-y.divide-gray-800');
                     cartContainer.innerHTML = `
                         <div class="py-6 text-center">
                             <p class="text-gray-500">Keranjang belanja Anda kosong.</p>

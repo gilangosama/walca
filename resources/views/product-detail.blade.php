@@ -295,17 +295,273 @@
             background-color: #333;
             transform: translateY(-2px);
         }
+        /* Efek Glassmorphism dan Animasi */
+        .product-container {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .product-image-container {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: transform 0.5s ease;
+        }
+        .product-image-container:hover {
+            transform: scale(1.02);
+        }
+        .product-image-thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .product-image-thumbnail:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .product-image-thumbnail.active {
+            border-color: #ffffff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+        .size-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .size-btn:hover:not(.disabled) {
+            background: rgba(255, 255, 255, 0.9);
+            color: black;
+            transform: translateY(-2px);
+        }
+        .size-btn.bg-black {
+            background: white;
+            color: black;
+            border-color: white;
+        }
+        .quantity-input {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .quantity-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .quantity-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .quantity-display {
+            background: transparent;
+            color: white;
+            border: none;
+        }
+        .category-badge {
+            background: linear-gradient(45deg, #000, #333);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .product-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #fff, #ccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+        .product-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        .spec-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+        .spec-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+        .related-product {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+        .related-product:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .related-image {
+            position: relative;
+            overflow: hidden;
+        }
+        .related-image img {
+            transition: transform 0.5s ease;
+        }
+        .related-product:hover .related-image img {
+            transform: scale(1.1);
+        }
+        body {
+            background: linear-gradient(45deg, #000, #111);
+            color: white;
+        }
+        /* Payment Methods Section */
+        .payment-methods {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+        .payment-methods img {
+            transition: all 0.3s ease;
+            filter: grayscale(100%);
+            opacity: 0.7;
+        }
+        .payment-methods img:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+        /* Custom Alert Styling */
+        .custom-alert {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .custom-alert-header {
+            background: linear-gradient(45deg, #000, #333);
+        }
+        .custom-alert-button {
+            background: white;
+            color: black;
+            transition: all 0.3s ease;
+        }
+        .custom-alert-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+        }
+        /* Animasi Loading */
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        .loading {
+            background: linear-gradient(90deg, 
+                rgba(255,255,255,0.1) 25%, 
+                rgba(255,255,255,0.2) 50%, 
+                rgba(255,255,255,0.1) 75%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+        }
+        .back-button svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            transition: transform 0.3s ease;
+        }
+        .back-button:hover svg {
+            transform: translateX(-5px);
+        }
+        .refund-notice {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(10px);
+            border-left: 4px solid #FFD700;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+        .refund-notice p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+        .action-button {
+            width: 100%;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: black;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+            text-transform: uppercase;
+        }
+        .action-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+        .action-button i {
+            font-size: 1.2rem;
+        }
     </style>
 
     <!-- Product Detail Section -->
     <div class="pt-28 pb-16">
         <div class="container mx-auto max-w-7xl px-4 md:px-6">
             <!-- Back Button -->
-            <a href="{{ route('shops') }}" class="inline-flex items-center text-gray-600 hover:text-black mb-6 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            <a href="{{ route('shops') }}" class="back-button">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Back
+                Kembali ke Toko
             </a>
             
             <div class="flex flex-col md:flex-row gap-10 lg:gap-16">
@@ -379,12 +635,14 @@
                     <!-- Notify Button or Order Button -->
                     <div class="mb-8">
                         @if($product->stock > 0)
-                            <button id="orderButton" class="w-full bg-black text-white py-3 rounded-md text-sm hover:bg-gray-800 transition flex items-center justify-center gap-2" onclick="orderProduct()">
-                                <i class="fas fa-shopping-cart"></i> Pesan Sekarang
+                            <button id="orderButton" class="action-button" onclick="orderProduct()">
+                                <i class="fas fa-shopping-cart"></i>
+                                Pesan Sekarang
                             </button>
                         @else
-                            <button class="notify-btn">
-                                <i class="fas fa-bell"></i> Notify me when the product is available again
+                            <button class="action-button" style="background: linear-gradient(135deg, #808080, #A9A9A9);">
+                                <i class="fas fa-bell"></i>
+                                Beritahu Saya Ketika Tersedia
                             </button>
                         @endif
                     </div>
@@ -422,15 +680,15 @@
                             </div>
                         </div>
                         
-                        <div class="bg-gray-50 p-4 rounded-md mb-6 border-l-4 border-gray-500">
-                            <p class="text-sm font-bold">REFUND WILL BE APPLIED IF THERE IS A VIDEO PROOF OF UNBOXING AND IF THERE IS AN ERROR OR DAMAGED ITEM FROM US, THANK YOU FOR YOUR ATTENTION</p>
+                        <div class="refund-notice">
+                            <p class="font-medium">PENGEMBALIAN AKAN DIPROSES JIKA ADA BUKTI VIDEO UNBOXING DAN JIKA ADA KESALAHAN ATAU BARANG RUSAK DARI KAMI, TERIMA KASIH ATAS PERHATIANNYA</p>
                         </div>
                         
                         <!-- Customer Service Button -->
-                        <button class="cs-button">
-                            <i class="far fa-comment-dots text-lg"></i>
-                            <span>Send a message to ChambredelaVain?</span>
-                        </button>
+                        {{-- <button class="action-button" style="background: linear-gradient(135deg, #000000, #333333);">
+                            <i class="far fa-comment-dots"></i>
+                            Hubungi ChambredelaVain
+                        </button> --}}
                     </div>
                 </div>
             </div>
