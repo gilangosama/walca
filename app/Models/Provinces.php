@@ -11,6 +11,11 @@ class Provinces extends Model
     public function regency() {
         return $this->hasMany(Regency::class, 'regency_id', 'id');
     }
+
+    public function address()
+    {        // Define the relationship with the Address model
+        return $this->hasMany(Address::class, 'province_id', 'id');
+    }
 }
 
 
