@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AddressController;
+use App\Http\Controllers\OngkirController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -49,4 +51,16 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+
+Route::get('/ongkir', [OngkirController::class, 'index']);
+Route::get('/destination', [OngkirController::class, 'getDestination']);
+Route::post('/get-cost', [OngkirController::class, 'getCost'])->name('get-cost');
+
+Route::get('/provinces', [AddressController::class, 'getProvinces'])->name('get-provinces');
+Route::get('/regency/{provinceId}', [AddressController::class, 'getRegency'])->name('get-regency');
+Route::get('/district/{regencyId}', [AddressController::class, 'getDistrict'])->name('get-district');
+Route::get('/village/{districtId}', [AddressController::class, 'getVillage'])->name('get-village');
+Route::post('/add-address', [AddressController::class, 'addAddress'])->name('add-address');
+
+
+require __DIR__ . '/auth.php';

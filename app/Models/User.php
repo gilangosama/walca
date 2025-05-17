@@ -21,12 +21,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'address',
-        'province',
-        'city',
-        'district',
-        'village',
-        'postal_code',
     ];
 
     /**
@@ -55,5 +49,10 @@ class User extends Authenticatable
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function address()
+    {
+        return $this->hasMany(Address::class);    
     }
 }
