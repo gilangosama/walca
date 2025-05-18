@@ -9,7 +9,7 @@ CREATE TABLE `reg_provinces` (
   name VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `reg_provinces` VALUES
+INSERT INTO `provinces` (`id`, `name`) VALUES
 ('11', 'ACEH'),
 ('12', 'SUMATERA UTARA'),
 ('13', 'SUMATERA BARAT'),
@@ -61,7 +61,7 @@ CREATE TABLE `reg_regencies` (
   CONSTRAINT fk_province FOREIGN KEY (province_id) REFERENCES reg_provinces(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `reg_regencies` VALUES
+INSERT INTO `regencies` (`id`, `province_id`, `name`) VALUES
 ('1101', '11', 'KAB. ACEH SELATAN'),
 ('1102', '11', 'KAB. ACEH TENGGARA'),
 ('1103', '11', 'KAB. ACEH TIMUR'),
@@ -590,7 +590,7 @@ CREATE TABLE `reg_districts` (
   CONSTRAINT fk_regency FOREIGN KEY (regency_id) REFERENCES reg_regencies(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `reg_districts` VALUES
+INSERT INTO `districts` (`id`, `regency_id`, `name`) VALUES
 ('110101', '1101', 'Bakongan'),
 ('110102', '1101', 'Kluet Utara'),
 ('110103', '1101', 'Kluet Selatan'),
@@ -7882,7 +7882,7 @@ CREATE TABLE `reg_villages` (
   CONSTRAINT fk_district FOREIGN KEY (district_id) REFERENCES reg_districts(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `reg_villages` VALUES
+INSERT INTO `villages` (`id`, `district_id`, `name`) VALUES
 ('1101012001', '110101', 'Keude Bakongan'),
 ('1101012002', '110101', 'Ujong Mangki'),
 ('1101012003', '110101', 'Ujong Padang'),

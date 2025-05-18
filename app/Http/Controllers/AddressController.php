@@ -37,16 +37,19 @@ class AddressController extends Controller
 
     public function addAddress(Request $request)
     {
+        // dd($request->all());
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
             'no_telp' => 'required|numeric',
-            'label' => 'required|string|in:rumah,kantor,lainnya',
+            'label' => 'required|string',
             'street' => 'required|string|max:255',
-            'detail' => 'nullable|string|max:255',
-            'province_id' => 'required|exists:provinces,id',
-            'regency_id' => 'required|exists:regencies,id',
-            'district_id' => 'required|exists:districts,id',
-            'village_id' => 'required|exists:villages,id',
+            'detail' => 'required|string|max:255',
+            'province' => 'required|string|max:255',
+            'regency' => 'required|string|max:255',
+            'district' => 'required|string|max:255',
+            'village' => 'required|string|max:255',
             'postal_code' => 'required|string|max:10',
         ]);
 
@@ -60,13 +63,58 @@ class AddressController extends Controller
             'country' => 'indonesia',
             'street' => $validated['street'],
             'detail' => $validated['detail'],
-            'province_id' => $validated['province_id'],
-            'regency_id' => $validated['regency_id'],
-            'district_id' => $validated['district_id'],
-            'village_id' => $validated['village_id'],
+            'province' => $validated['province'],
+            'regency' => $validated['regency'],
+            'district' => $validated['district'],
+            'village' => $validated['village'],
             'postal_code' => $validated['postal_code'],
         ]);
 
         return redirect()->back()->with('status', 'Alamat berhasil ditambahkan.');
+    }
+
+    public function editAddress(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'no_telp' => 'required|numeric',
+            'label' => 'required|string',
+            'street' => 'required|string|max:255',
+            'detail' => 'required|string|max:255',
+            'province' => 'required|string|max:255',
+            'regency' => 'required|string|max:255',
+            'district' => 'required|string|max:255',
+            'village' => 'required|string|max:255',
+            'postal_code' => 'required|string|max:10',
+        ]);
+        $address = Address::findOrFail($id);
+        // dump($address);
+
+        $address->update([
+            // 'user_id' => auth()->id(),
+            'name' => $validated['name'],
+            'no_telp' => $validated['no_telp'],
+            'label' => $validated['label'],
+            'country' => 'indonesia',
+            'street' => $validated['street'],
+            'detail' => $validated['detail'],
+            'province' => $validated['province'],
+            'regency' => $validated['regency'],
+            'district' => $validated['district'],
+            'village' => $validated['village'],
+            'postal_code' => $validated['postal_code'],
+        ]);
+        // dd($address);
+        return redirect()->back()->with('status', 'Alamat berhasil di update.');
+    }
+
+    public function deleteAddress($id)
+    {
+        $address = Address::findOrFail($id);
+        // dd($address);
+        $address->delete();
+
+        return redirect()->back()->with('status', 'Alamat berhasil dihapus.');
     }
 }

@@ -49,6 +49,15 @@ Route::middleware('auth')->group(function () {
             return view('admin.tawk-instructions');
         })->name('admin.chat-instructions');
     });
+
+    // Address
+    Route::get('/provinces', [AddressController::class, 'getProvinces'])->name('get-provinces');
+    Route::get('/regency/{provinceId}', [AddressController::class, 'getRegency'])->name('get-regency');
+    Route::get('/district/{regencyId}', [AddressController::class, 'getDistrict'])->name('get-district');
+    Route::get('/village/{districtId}', [AddressController::class, 'getVillage'])->name('get-village');
+    Route::post('/add-address', [AddressController::class, 'addAddress'])->name('add-address');
+    Route::patch('/edit-address/{id}', [AddressController::class, 'editAddress'])->name('edit-address');
+    Route::delete('/add-address/{id}', [AddressController::class, 'deleteAddress'])->name('delete-address');
 });
 
 
@@ -56,11 +65,7 @@ Route::get('/ongkir', [OngkirController::class, 'index']);
 Route::get('/destination', [OngkirController::class, 'getDestination']);
 Route::post('/get-cost', [OngkirController::class, 'getCost'])->name('get-cost');
 
-Route::get('/provinces', [AddressController::class, 'getProvinces'])->name('get-provinces');
-Route::get('/regency/{provinceId}', [AddressController::class, 'getRegency'])->name('get-regency');
-Route::get('/district/{regencyId}', [AddressController::class, 'getDistrict'])->name('get-district');
-Route::get('/village/{districtId}', [AddressController::class, 'getVillage'])->name('get-village');
-Route::post('/add-address', [AddressController::class, 'addAddress'])->name('add-address');
+
 
 
 require __DIR__ . '/auth.php';
