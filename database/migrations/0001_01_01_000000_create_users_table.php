@@ -20,9 +20,6 @@ return new class extends Migration
             $table->string('role')->default('user');
             $table->string('profile_picture')->nullable();
             $table->string('phone')->nullable();
-            $table->string('address')->nullable();
-            $table->string('city')->nullable();
-            $table->string('postal_code')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

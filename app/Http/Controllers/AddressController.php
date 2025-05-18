@@ -36,8 +36,7 @@ class AddressController extends Controller
     }
 
     public function addAddress(Request $request)
-    {   
-        
+    {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'no_telp' => 'required|numeric',
@@ -50,8 +49,8 @@ class AddressController extends Controller
             'village_id' => 'required|exists:villages,id',
             'postal_code' => 'required|string|max:10',
         ]);
-        
-        dd($validated);
+
+        // dd($validated);
 
         Address::create([
             'user_id' => auth()->id(),
@@ -61,10 +60,10 @@ class AddressController extends Controller
             'country' => 'indonesia',
             'street' => $validated['street'],
             'detail' => $validated['detail'],
-            'provinces' => $validated['province_id'],
-            'regency' => $validated['regency_id'],
-            'district' => $validated['district_id'],
-            'village' => $validated['village_id'],
+            'province_id' => $validated['province_id'],
+            'regency_id' => $validated['regency_id'],
+            'district_id' => $validated['district_id'],
+            'village_id' => $validated['village_id'],
             'postal_code' => $validated['postal_code'],
         ]);
 

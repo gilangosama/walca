@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Regency extends Model
 {
-    protected $table = 'reg_regencies';
+    protected $table = 'regencies';
 
     public function provinces() {
         return $this->belongsTo(provinces::class, 'regency_id', 'id');
@@ -15,5 +15,10 @@ class Regency extends Model
 
     public function district() {
         return $this->hasMany(District::class, 'district_id', 'id');
+    }
+
+    public function address()
+    {
+        return $this->hasMany(Address::class, 'regency_id', 'id');
     }
 }
