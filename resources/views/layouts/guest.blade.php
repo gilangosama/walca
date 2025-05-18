@@ -66,14 +66,14 @@
                 </a>
             </div>
             
-            <div class="w-full sm:max-w-md px-8 py-10 bg-white animate-fade-in card-shadow rounded-2xl mt-10 mb-10">
+            <div class="w-full sm:max-w-md px-8 py-10 animate-fade-in card-shadow rounded-2xl mt-10 mb-10">
                 <div class="flex justify-center mb-10">
-                    <a href="/" class="bounce-hover focus:outline-none focus:ring-0">
+                    {{-- <a href="/" class="bounce-hover focus:outline-none focus:ring-0">
                         <x-application-logo class="w-20 h-20 fill-current text-gray-800" />
-                    </a>
+                    </a> --}}
                 </div>
 
-                <div class="w-full bg-white overflow-hidden">
+                <div class="w-full overflow-hidden">
                     {{ $slot }}
                 </div>
                 

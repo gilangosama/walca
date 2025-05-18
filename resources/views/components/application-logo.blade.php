@@ -1,1 +1,1 @@
-<img src="{{ asset('img/logo.jpg') }}" alt="Logo" class="w-16 h-16 brightness-10 invert">
+<img src="{{ asset('img/logo.jpg') }}" alt="Logo" class="w-16 h-16 brightness-10">
