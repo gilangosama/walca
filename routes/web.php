@@ -56,6 +56,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/regency/{provinceId}', [AddressController::class, 'getRegency'])->name('get-regency');
     Route::get('/district/{regencyId}', [AddressController::class, 'getDistrict'])->name('get-district');
     Route::get('/village/{districtId}', [AddressController::class, 'getVillage'])->name('get-village');
+    Route::get('/add-address', [AddressController::class, 'create'])->name('create-address');
     Route::post('/add-address', [AddressController::class, 'addAddress'])->name('add-address');
     Route::patch('/edit-address/{id}', [AddressController::class, 'editAddress'])->name('edit-address');
     Route::delete('/add-address/{id}', [AddressController::class, 'deleteAddress'])->name('delete-address');

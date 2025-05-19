@@ -35,6 +35,15 @@ class AddressController extends Controller
         return response()->json($villages);
     }
 
+    public function create()
+    {
+        return view('profile.formAddress');
+    }
+
+    public function edit($id) {
+        dd($id);
+    }
+
     public function addAddress(Request $request)
     {
         // dd($request->all());

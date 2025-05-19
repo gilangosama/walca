@@ -123,11 +123,9 @@
                                 @endif
                             </div>
                             <div class="flex gap-2 mt-2 md:mt-0">
-                                <x-secondary-button class="text-xs px-3 py-2" x-data
-                                    x-on:click.prevent="$dispatch('open-modal', 'edit-address-{{ $address->id }}')">
-                                    {{ __('Edit') }}
-                                </x-secondary-button>
-
+<x-secondary-button class="text-xs px-3 py-2" x-data @click="window.location.href='{{ route('create-address', $address->id) }}'">
+    {{ __('Edit') }}
+</x-secondary-button>
                                 <x-danger-button x-data=""
                                     x-on:click.prevent="$dispatch('open-modal', 'confirm-address-deletion-{{ $address->id }}')">{{ __('Delete') }}</x-danger-button>
 
