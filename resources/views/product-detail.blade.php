@@ -262,82 +262,101 @@
         /* Custom Alert Modal Styles */
         .custom-alert-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.45);
+            display: flex; align-items: center; justify-content: center;
             z-index: 9999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
+            opacity: 0; visibility: hidden;
+            transition: all 0.3s;
         }
 
         .custom-alert-overlay.active {
-            opacity: 1;
-            visibility: visible;
+            opacity: 1; visibility: visible;
         }
 
         .custom-alert {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            width: 90%;
-            max-width: 400px;
-            padding: 0;
-            overflow: hidden;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
+            min-width: 320px;
+            max-width: 90vw;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+            padding: 32px 24px 24px 24px;
+            position: relative;
+            text-align: center;
+            animation: popIn 0.35s cubic-bezier(.68,-0.55,.27,1.55);
         }
-
-        .custom-alert-overlay.active .custom-alert {
-            transform: translateY(0);
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.8); }
+            80% { transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
         }
-
-        .custom-alert-header {
-            background-color: black;
-            padding: 15px 20px;
-            color: white;
-            font-weight: 600;
+        .custom-alert-icon {
+            font-size: 2.8rem;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            width: 100%;
         }
-
-        .custom-alert-header i {
-            margin-right: 10px;
+        .custom-alert-icon.success {
+            color: #34c759;
         }
-
-        .custom-alert-content {
-            padding: 20px;
-            font-size: 14px;
-            color: #333;
+        .custom-alert-icon.warning {
+            color: #ffb300;
         }
-
-        .custom-alert-footer {
-            padding: 15px 20px;
-            background-color: #f8f8f8;
-            text-align: right;
-        }
-
-        .custom-alert-button {
-            background-color: black;
-            color: white;
+        .custom-alert-header {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #ffffff;
+            background: none;
             border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
+            display: block;
+        }
+        .custom-alert-content {
+            color: #ffffff;
+            font-size: 1.05rem;
+            margin-bottom: 24px;
+            word-break: break-word;
+        }
+        .custom-alert-footer {
+            background: none;
+            border: none;
+            text-align: center;
+        }
+        .custom-alert-button {
+            background: linear-gradient(90deg, #FFD700, #FFB300);
+            color: #222;
+            font-weight: bold;
+            border-radius: 24px;
+            border: none;
+            padding: 12px 0;
+            width: 100%;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: background 0.2s, color 0.2s;
+            margin-top: 0;
             cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
         }
-
         .custom-alert-button:hover {
-            background-color: #333;
-            transform: translateY(-2px);
+            background: linear-gradient(90deg, #FFB300, #FFD700);
+            color: #000;
         }
+        @media (max-width: 480px) {
+            .custom-alert { padding: 18px 8px 16px 8px; min-width: 0; }
+            .custom-alert-header { font-size: 1.05rem; }
+            .custom-alert-content { font-size: 0.98rem; }
+        }
+        .custom-alert-close {
+            position: absolute;
+            top: 12px; right: 16px;
+            background: none; border: none;
+            color: #888; font-size: 1.3rem;
+            cursor: pointer;
+            z-index: 2;
+            transition: color 0.2s;
+        }
+        .custom-alert-close:hover { color: #222; }
 
         /* Efek Glassmorphism dan Animasi */
         .product-container {
@@ -727,11 +746,11 @@
                     <!-- Notify Button or Order Button -->
                     <div class="mb-8 flex gap-2">
                         @if ($product->stock > 0)
-                            <button id="orderButton" class="action-button" onclick="orderProduct()">
+                            {{-- <button id="orderNowButton" class="action-button" onclick="orderProduct('checkout')">
                                 <i class="fas fa-shopping-cart"></i>
                                 Pesan Sekarang
-                            </button>
-                            <button id="add-cart" class="action-button" onclick="orderProduct()">
+                            </button> --}}
+                            <button id="addCartButton" class="action-button" onclick="orderProduct('stay')">
                                 <i class="fas fa-shopping-cart"></i>
                                 Add Cart
                             </button>
@@ -872,16 +891,10 @@
     <!-- Custom Alert Modal -->
     <div id="customAlertOverlay" class="custom-alert-overlay">
         <div class="custom-alert">
-            <div class="custom-alert-header">
-                <div><i class="fas fa-exclamation-circle"></i> Peringatan</div>
-                <button onclick="closeCustomAlert()"
-                    style="background: none; border: none; color: white; cursor: pointer;">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div id="customAlertContent" class="custom-alert-content">
-                <!-- Alert Message Here -->
-            </div>
+            <button class="custom-alert-close" onclick="closeCustomAlert()"><i class="fas fa-times"></i></button>
+            <div id="customAlertIcon" class="custom-alert-icon"><i class="fas fa-exclamation-circle"></i></div>
+            <div id="customAlertHeader" class="custom-alert-header">Peringatan</div>
+            <div id="customAlertContent" class="custom-alert-content"></div>
             <div class="custom-alert-footer">
                 <button class="custom-alert-button" onclick="closeCustomAlert()">OK</button>
             </div>
@@ -971,29 +984,38 @@
         }
 
         // Show custom alert function
-        function showCustomAlert(message) {
+        function showCustomAlert(message, type = 'warning') {
             const overlay = document.getElementById('customAlertOverlay');
+            const icon = document.getElementById('customAlertIcon');
+            const header = document.getElementById('customAlertHeader');
             const content = document.getElementById('customAlertContent');
+            const button = document.querySelector('.custom-alert-button');
 
-            content.textContent = message;
+            // Set icon dan warna
+            if (type === 'success') {
+                icon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                icon.className = 'custom-alert-icon success';
+                header.textContent = 'Sukses';
+            } else {
+                icon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+                icon.className = 'custom-alert-icon warning';
+                header.textContent = 'Peringatan';
+            }
+            content.innerHTML = message;
             overlay.classList.add('active');
-
-            // Add event listener to close when clicking outside
-            overlay.addEventListener('click', function(event) {
-                if (event.target === overlay) {
-                    closeCustomAlert();
-                }
-            });
+            // Fokus ke tombol OK agar mudah di-enter
+            setTimeout(() => { button.focus(); }, 200);
+            // Tutup jika klik di luar
+            overlay.onclick = function(e) { if (e.target === overlay) closeCustomAlert(); };
         }
 
         // Close custom alert function
         function closeCustomAlert() {
-            const overlay = document.getElementById('customAlertOverlay');
-            overlay.classList.remove('active');
+            document.getElementById('customAlertOverlay').classList.remove('active');
         }
 
         // Order product
-        function orderProduct() {
+        function orderProduct(action = 'checkout') {
             const selectedSize = document.getElementById('selectedSize').value;
             const quantity = parseInt(document.getElementById('quantity').innerText);
 
@@ -1003,20 +1025,51 @@
             }
 
             @auth
-            // Simpan data ke localStorage untuk sementara (dalam proyek nyata, ini akan dikirim ke server)
-            const orderData = {
+            // Buat data produk baru
+            const newItem = {
                 productId: {{ $product->id }},
                 productName: "{{ $product->name }}",
+                productImage: "{{ asset('img/1.jpg') }}",
                 price: {{ intval(str_replace(',', '', str_replace('Rp ', '', $product->price))) }},
                 size: selectedSize,
                 quantity: quantity
             };
-            console.log(orderData)
-            // Simpan data pesanan ke localStorage
-            localStorage.setItem('currentOrder', JSON.stringify(orderData));
+            
+            // Cek apakah sudah ada keranjang di localStorage
+            let cartItems = [];
+            const existingCart = localStorage.getItem('cartItems');
+            
+            if (existingCart) {
+                // Jika keranjang sudah ada, ambil isinya
+                cartItems = JSON.parse(existingCart);
+            }
+            
+            // Cek apakah produk sudah ada di keranjang (dengan size yang sama)
+            const existingItemIndex = cartItems.findIndex(
+                item => item.productId === newItem.productId && item.size === newItem.size
+            );
+            
+            if (existingItemIndex !== -1) {
+                // Jika produk sudah ada, tambahkan quantity saja
+                cartItems[existingItemIndex].quantity += newItem.quantity;
+            } else {
+                // Jika produk belum ada, tambahkan ke array
+                cartItems.push(newItem);
+            }
+            
+            // Simpan kembali ke localStorage
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
 
-            // Redirect ke halaman cart atau checkout
-            window.location.href = "{{ route('cart') }}";
+            // Hitung total item di keranjang
+            const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+
+            // Jika action adalah checkout, redirect ke halaman cart
+            // Jika tidak (stay), tetap di halaman dan tampilkan pesan sukses
+            if (action === 'checkout') {
+                window.location.href = "{{ route('cart') }}";
+            } else {
+                showCustomAlert(`Produk berhasil ditambahkan ke keranjang<br>Total item di keranjang: ${totalItems}`, 'success');
+            }
         @else
             // Simpan data produk ke sessionStorage agar bisa diambil setelah login
             const productData = {

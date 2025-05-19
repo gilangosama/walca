@@ -16,9 +16,8 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        // dd($request->user()->load('address'));
         return view('profile.edit', [
-            'user' => $request->user()->load('address'),
+            'user' => $request->user()->load(['address', 'orders.orderItems.product']),
         ]);
     }
 
