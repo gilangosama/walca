@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('stock')->default(0);
             $table->json('jenis')->nullable();
             $table->json('size')->nullable();
-            $table->string('color')->nullable();
+            $table->json('color')->nullable();
             $table->json('image')->nullable();
             $table->string('slug')->unique();
             $table->integer('weight')->nullable();

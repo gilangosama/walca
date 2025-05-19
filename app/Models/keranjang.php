@@ -10,6 +10,9 @@ class Keranjang extends Model
         'user_id',
         'product_id',
         'quantity',
+        'size',
+        'color',
+        'jenis'
     ];
 
     public function user()

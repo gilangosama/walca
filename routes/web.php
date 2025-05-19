@@ -17,6 +17,7 @@ Route::get('/about', function () {
 Route::get('/shops', [ProductController::class, 'index'])->name('shops');
 
 Route::get('/shops/products/{slug}', [ProductController::class, 'detail'])->name('product.detail');
+Route::post('/add-keranjang', [ProductController::class, 'addKeranjang'])->name('add-keranjang');
 
 Route::get('/lookbook', function () {
     return view('lookbook');

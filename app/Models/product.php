@@ -23,6 +23,7 @@ class Product extends Model
         'jenis' => 'array',
         'size' => 'array',
         'image' => 'array',
+        'color' => 'array',
     ];
 
     public function categories()

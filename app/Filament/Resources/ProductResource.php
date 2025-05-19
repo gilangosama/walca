@@ -50,8 +50,18 @@ class ProductResource extends Resource
                 ->required()
                 ->afterStateHydrated(fn($state, Forms\Set $set) => $set('jenis', is_array($state) ? implode(', ', $state) : $state))
                 ->dehydrateStateUsing(fn($state) => array_map('trim', explode(',', $state))),
-            TextInput::make('size'),
-            TextInput::make('color'),
+            TextInput::make('size')
+                ->label('Size')
+                ->placeholder('Enter size separated by commas')
+                ->required()
+                ->afterStateHydrated(fn($state, Forms\Set $set) => $set('jenis', is_array($state) ? implode(', ', $state) : $state))
+                ->dehydrateStateUsing(fn($state) => array_map('trim', explode(',', $state))),
+            TextInput::make('color')
+                ->label('Color')
+                ->placeholder('Enter color separated by commas')
+                ->required()
+                ->afterStateHydrated(fn($state, Forms\Set $set) => $set('jenis', is_array($state) ? implode(', ', $state) : $state))
+                ->dehydrateStateUsing(fn($state) => array_map('trim', explode(',', $state))),
             FileUpload::make('image')
                 ->label('Gambar')
                 ->columnSpan('full')
