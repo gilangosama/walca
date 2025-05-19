@@ -252,73 +252,105 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Load cart items from localStorage
-            const currentOrder = JSON.parse(localStorage.getItem('currentOrder'));
-            if (currentOrder) {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const cartContainer = document.querySelector('.divide-y.divide-gray-800');
+            
+            // Format harga
+            const formatter = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            });
+            
+            if (cartItems.length > 0) {
                 // Kosongkan cart container terlebih dahulu
-                const cartContainer = document.querySelector('.divide-y.divide-gray-800');
                 cartContainer.innerHTML = '';
                 
-                // Format harga
-                const formatter = new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    minimumFractionDigits: 0
-                });
+                // Hitung total keseluruhan
+                let subtotal = 0;
                 
-                // Hitung total
-                const totalPrice = currentOrder.price * currentOrder.quantity;
-                
-                // Buat element cart item
-                const cartItemHTML = `
-                    <div class="cart-item py-6 md:grid md:grid-cols-12 md:gap-4 md:items-center">
-                        <div class="md:col-span-6 flex items-start space-x-4">
-                            <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-700">
-                                <img src="{{ asset('img/1.jpg') }}" alt="${currentOrder.productName}" class="h-full w-full object-cover object-center">
+                // Loop semua item di keranjang
+                cartItems.forEach((item, index) => {
+                    // Hitung total per item
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    
+                    // Buat element cart item
+                    const cartItemHTML = `
+                        <div class="cart-item py-6 md:grid md:grid-cols-12 md:gap-4 md:items-center" data-index="${index}">
+                            <div class="md:col-span-6 flex items-start space-x-4">
+                                <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-700">
+                                    <img src="${item.productImage}" alt="${item.productName}" class="h-full w-full object-cover object-center">
+                                </div>
+                                <div class="flex flex-col product-details">
+                                    <h3 class="product-name">${item.productName}</h3>
+                                    <p class="mt-1 product-size">Ukuran: ${item.size}</p>
+                                    <button class="remove-btn mt-2 text-sm flex items-center md:hidden" onclick="removeCartItem(${index})">
+                                        <i class="fas fa-trash mr-1"></i> Hapus
+                                    </button>
+                                </div>
                             </div>
-                            <div class="flex flex-col product-details">
-                                <h3 class="product-name">${currentOrder.productName}</h3>
-                                <p class="mt-1 product-size">${currentOrder.size}</p>
-                                <button class="remove-btn mt-2 text-sm flex items-center md:hidden" onclick="removeCartItem()">
+                            <div class="md:col-span-2 text-center mt-4 md:mt-0">
+                                <p class="product-price">${formatter.format(item.price)}</p>
+                            </div>
+                            <div class="md:col-span-2 flex justify-center mt-4 md:mt-0">
+                                <div class="flex items-center">
+                                    <button class="quantity-btn rounded-l-md" onclick="updateQuantity(${index}, -1)">
+                                        <i class="fas fa-minus text-xs"></i>
+                                    </button>
+                                    <input type="text" value="${item.quantity}" class="quantity-input h-[35px]" readonly>
+                                    <button class="quantity-btn rounded-r-md" onclick="updateQuantity(${index}, 1)">
+                                        <i class="fas fa-plus text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="md:col-span-2 text-center mt-4 md:mt-0">
+                                <p class="item-total product-price">${formatter.format(itemTotal)}</p>
+                                <button class="remove-btn hidden md:inline-flex items-center mt-2" onclick="removeCartItem(${index})">
                                     <i class="fas fa-trash mr-1"></i> Hapus
                                 </button>
                             </div>
                         </div>
-                        <div class="md:col-span-2 text-center mt-4 md:mt-0">
-                            <p class="product-price">${formatter.format(currentOrder.price)}</p>
-                        </div>
-                        <div class="md:col-span-2 flex justify-center mt-4 md:mt-0">
-                            <div class="flex items-center">
-                                <button class="quantity-btn rounded-l-md" onclick="updateQuantity(-1)">
-                                    <i class="fas fa-minus text-xs"></i>
-                                </button>
-                                <input type="text" value="${currentOrder.quantity}" class="quantity-input h-[35px]" readonly>
-                                <button class="quantity-btn rounded-r-md" onclick="updateQuantity(1)">
-                                    <i class="fas fa-plus text-xs"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="md:col-span-2 text-center mt-4 md:mt-0">
-                            <p class="item-total product-price">${formatter.format(totalPrice)}</p>
-                            <button class="remove-btn hidden md:inline-flex items-center mt-2" onclick="removeCartItem()">
-                                <i class="fas fa-trash mr-1"></i> Hapus
-                            </button>
-                        </div>
-                    </div>
-                `;
+                    `;
+                    
+                    // Tambahkan ke container
+                    cartContainer.innerHTML += cartItemHTML;
+                });
                 
-                // Tambahkan ke container
-                cartContainer.innerHTML = cartItemHTML;
-                
-                // Update subtotal dan total
+                // Update subtotal dan total di ringkasan
                 document.querySelectorAll('.order-summary-subtotal').forEach(el => {
-                    el.textContent = formatter.format(totalPrice);
+                    el.textContent = formatter.format(subtotal);
                 });
                 document.querySelectorAll('.order-summary-total').forEach(el => {
-                    el.textContent = formatter.format(totalPrice);
+                    el.textContent = formatter.format(subtotal);
                 });
+                
+                // Enable tombol checkout
+                const checkoutButton = document.getElementById('checkoutButton');
+                if (checkoutButton) {
+                    checkoutButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                    checkoutButton.onclick = function() {
+                        // Ambil cart dari localStorage
+                        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+                        // Kirim ke backend
+                        fetch('/cart/checkout', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({ orderItems: cartItems })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                window.location.href = "{{ route('checkout') }}";
+                            }
+                        });
+                    };
+                }
             } else {
                 // Jika tidak ada item di cart
-                const cartContainer = document.querySelector('.divide-y.divide-gray-800');
                 cartContainer.innerHTML = `
                     <div class="py-6 text-center">
                         <p class="text-gray-500">Keranjang belanja Anda kosong.</p>
@@ -340,87 +372,37 @@
             }
             
             // Fungsi untuk update quantity
-            window.updateQuantity = function(change) {
-                const input = document.querySelector('.quantity-input');
-                let value = parseInt(input.value);
-                const newValue = value + change;
+            window.updateQuantity = function(index, change) {
+                const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+                const item = cartItems[index];
                 
-                if (newValue >= 1) {
-                    input.value = newValue;
-                    
-                    // Update localStorage
-                    const currentOrder = JSON.parse(localStorage.getItem('currentOrder'));
-                    if (currentOrder) {
-                        currentOrder.quantity = newValue;
-                        localStorage.setItem('currentOrder', JSON.stringify(currentOrder));
-                        
-                        // Format currency
-                        const formatter = new Intl.NumberFormat('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR',
-                            minimumFractionDigits: 0
-                        });
-                        
-                        // Update total price
-                        const totalPrice = currentOrder.price * newValue;
-                        document.querySelector('.item-total').textContent = formatter.format(totalPrice);
-                        
-                        // Update subtotal dan total
-                        document.querySelectorAll('.order-summary-subtotal').forEach(el => {
-                            el.textContent = formatter.format(totalPrice);
-                        });
-                        document.querySelectorAll('.order-summary-total').forEach(el => {
-                            el.textContent = formatter.format(totalPrice);
-                        });
-                    }
-                }
+                if (!item) return;
+                
+                // Update quantity dengan batas minimal 1
+                const newQuantity = Math.max(1, item.quantity + change);
+                item.quantity = newQuantity;
+                
+                // Simpan kembali ke localStorage
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                
+                // Refresh halaman untuk menampilkan perubahan
+                location.reload();
             };
             
             // Fungsi untuk menghapus item
-            window.removeCartItem = function() {
-                localStorage.removeItem('currentOrder');
-                const cartItem = document.querySelector('.cart-item');
-                cartItem.style.opacity = '0';
+            window.removeCartItem = function(index) {
+                const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
                 
-                // Format currency untuk tampilan
-                const formatter = new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    minimumFractionDigits: 0
-                });
+                if (!cartItems[index]) return;
                 
-                setTimeout(() => {
-                    cartItem.remove();
-                    
-                    // Reset subtotal dan total
-                    document.querySelectorAll('.order-summary-subtotal').forEach(el => {
-                        el.textContent = formatter.format(0);
-                    });
-                    document.querySelectorAll('.order-summary-total').forEach(el => {
-                        el.textContent = formatter.format(0);
-                    });
-                    
-                    // Tampilkan pesan keranjang kosong
-                    const cartContainer = document.querySelector('.divide-y.divide-gray-800');
-                    cartContainer.innerHTML = `
-                        <div class="py-6 text-center">
-                            <p class="text-gray-500">Keranjang belanja Anda kosong.</p>
-                            <a href="{{ route('shops') }}" class="mt-4 inline-block text-sm font-medium text-black">
-                                Belanja Sekarang
-                            </a>
-                        </div>
-                    `;
-                    
-                    // Disable tombol checkout
-                    const checkoutButton = document.getElementById('checkoutButton');
-                    if (checkoutButton) {
-                        checkoutButton.classList.add('opacity-50', 'cursor-not-allowed');
-                        checkoutButton.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            alert('Keranjang belanja Anda kosong.');
-                        });
-                    }
-                }, 300);
+                // Hapus item dari array
+                cartItems.splice(index, 1);
+                
+                // Simpan kembali ke localStorage
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                
+                // Refresh halaman untuk menampilkan perubahan
+                location.reload();
             };
         });
     </script>

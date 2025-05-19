@@ -37,6 +37,34 @@
             </main>
         </div>
 
+        <!-- Script untuk memperbarui jumlah item keranjang -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Fungsi untuk memperbarui indikator keranjang
+                function updateCartCounter() {
+                    const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+                    const counter = document.getElementById('cart-counter');
+                    
+                    if (cartItems.length > 0) {
+                        // Hitung total item
+                        const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+                        
+                        // Perbarui counter
+                        counter.textContent = totalItems;
+                        counter.style.display = 'flex';
+                    } else {
+                        counter.style.display = 'none';
+                    }
+                }
+                
+                // Jalankan fungsi saat halaman dimuat
+                updateCartCounter();
+                
+                // Perbarui counter setiap 2 detik untuk menangkap perubahan
+                setInterval(updateCartCounter, 2000);
+            });
+        </script>
+
         @stack('scripts')
         
         <!--Start of Tawk.to Script-->

@@ -12,6 +12,7 @@ class OrderItem extends Model
         'quantity',
         'price',
         'subtotal', // Added subtotal
+        'invoice', // Added invoice
     ];
 
     protected static function booted()

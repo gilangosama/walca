@@ -5,6 +5,8 @@ use App\Http\Controllers\OngkirController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CartController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,9 +33,7 @@ Route::get('/orders', function () {
     return view('orders');
 })->name('orders');
 
-Route::get('/checkout', function () {
-    return view('checkout');
-})->name('checkout');
+Route::get('/checkout', [\App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -66,7 +66,11 @@ Route::get('/ongkir', [OngkirController::class, 'index']);
 Route::get('/destination', [OngkirController::class, 'getDestination']);
 Route::post('/get-cost', [OngkirController::class, 'getCost'])->name('get-cost');
 
+Route::post('/cart/checkout', [CartController::class, 'checkoutToSession'])->name('cart.checkoutToSession');
 
-
+Route::post('/checkout/place-order', [App\Http\Controllers\CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
+Route::get('/checkout/success', function() {
+    return view('checkout-success');
+})->name('checkout.success');
 
 require __DIR__ . '/auth.php';
