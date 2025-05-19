@@ -128,208 +128,13 @@
                                     {{ __('Edit') }}
                                 </x-secondary-button>
 
-                                <!-- Modal for editing address -->
-                                <x-modal name="edit-address-{{ $address->id }}" focusable>
-                                    <form action="{{ route('edit-address', $address->id) }}" method="post">
-                                        @csrf
-                                        @method('PATCH')
-                                        <!-- Address Information -->
-                                        <div
-                                            class="p-6 bg-white rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
-                                            <h3
-                                                class="text-md font-semibold text-gray-800 mb-4 flex items-center pb-2 border-b">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                    class="h-5 w-5 mr-2 text-gray-500" fill="none"
-                                                    viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                </svg>
-                                                {{ __('Edit Address') }}
-                                            </h3>
-                                            <!-- Name and Phone Number -->
-                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                                <div class="relative">
-                                                    <x-input-label for="name" :value="__('Name')"
-                                                        class="font-medium text-gray-700" />
-                                                    <div class="relative mt-1 rounded-md shadow-sm">
-                                                        <input id="name" type="text" name="name"
-                                                            class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black transition appearance-none bg-none"
-                                                            required placeholder="Enter Name"
-                                                            value="{{ old('name', $address->name) }}">
-                                                    </div>
-                                                    <x-input-error class="mt-2" :messages="$errors->get('name')" />
-                                                </div>
-                                                <div class="relative">
-                                                    <x-input-label for="no_telp" :value="__('Phone Number / WhatsApp')"
-                                                        class="font-medium text-gray-700" />
-                                                    <div class="relative mt-1 rounded-md shadow-sm">
-                                                        <input id="no_telp" type="text"
-                                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                                                            name="no_telp"
-                                                            class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black transition appearance-none bg-none"
-                                                            placeholder="Enter Phone Number" required
-                                                            value="{{ old('no_telp', $address->no_telp) }}">
-                                                    </div>
-                                                    <x-input-error class="mt-2" :messages="$errors->get('no_telp')" />
-                                                </div>
-                                            </div>
-                                            <div class="mb-6">
-                                                <x-input-label :value="'Country'"
-                                                    class="font-medium text-gray-700 mb-2" />
-                                                <div class="flex gap-4">
-                                                    <label class="inline-flex items-center">
-                                                        <input type="radio" name="country" value="indonesia"
-                                                            class="form-radio text-black"
-                                                            {{ old('country', $address->country) == 'indonesia' ? 'checked' : '' }}>
-                                                        <span class="ml-2">Indonesia</span>
-                                                    </label>
-                                                    <label class="inline-flex items-center">
-                                                        <input type="radio" name="country" value="japan"
-                                                            class="form-radio text-black"
-                                                            {{ old('country', $address->country) == 'japan' ? 'checked' : '' }}>
-                                                        <span class="ml-2">Japan</span>
-                                                    </label>
-                                                </div>
-                                                <x-input-error class="mt-2" :messages="$errors->get('country')" />
-                                            </div>
-                                            <div class="mb-6">
-                                                <x-input-label :value="'Label'"
-                                                    class="font-medium text-gray-700 mb-2" />
-                                                <div class="flex gap-4">
-                                                    <label class="inline-flex items-center">
-                                                        <input type="radio" name="label" value="home"
-                                                            class="form-radio text-black"
-                                                            {{ old('label', $address->label) == 'home' ? 'checked' : '' }}>
-                                                        <span class="ml-2">Home</span>
-                                                    </label>
-                                                    <label class="inline-flex items-center">
-                                                        <input type="radio" name="label" value="office"
-                                                            class="form-radio text-black"
-                                                            {{ old('label', $address->label) == 'office' ? 'checked' : '' }}>
-                                                        <span class="ml-2">Office</span>
-                                                    </label>
-                                                    <label class="inline-flex items-center">
-                                                        <input type="radio" name="label" value="other"
-                                                            class="form-radio text-black"
-                                                            {{ old('label', $address->label) == 'other' ? 'checked' : '' }}>
-                                                        <span class="ml-2">Other</span>
-                                                    </label>
-                                                </div>
-                                                <x-input-error class="mt-2" :messages="$errors->get('label')" />
-                                            </div>
-                                            <div class="mb-6">
-                                                <x-input-label for="street" :value="__('Full Address')"
-                                                    class="font-medium text-gray-700" />
-                                                <div class="relative mt-1 rounded-md shadow-sm">
-                                                    <textarea id="street" name="street"
-                                                        class="pl-10 block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black transition"
-                                                        required rows="3">{{ old('street', $address->street) }}</textarea>
-                                                </div>
-                                                <x-input-error class="mt-2" :messages="$errors->get('street')" />
-                                            </div>
-                                            <div class="mb-6">
-                                                <x-input-label for="detail" :value="__('Details')"
-                                                    class="font-medium text-gray-700" />
-                                                <div class="relative mt-1 rounded-md shadow-sm">
-                                                    <input id="detail" name="detail"
-                                                        class="pl-10 block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black transition"
-                                                        value="{{ old('detail', $address->detail) }}" rows="3"
-                                                        required>
-                                                </div>
-                                                <x-input-error class="mt-2" :messages="$errors->get('detail')" />
-                                            </div>
-                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                                <div class="relative">
-                                                    <x-input-label for="province" :value="__('Province')"
-                                                        class="font-medium text-gray-700" />
-                                                    <div class="relative mt-1 rounded-md shadow-sm">
-                                                        <input id="province_tags_{{ $address->id }}"
-                                                            class="pl-10 block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black transition appearance-none bg-none"
-                                                            placeholder="Type province name..." name="province"
-                                                            value="{{ old('province', $address->province) }}">
-                                                        <input type="hidden" name="province_id"
-                                                            id="province_id_{{ $address->id }}">
-                                                    </div>
-                                                    <x-input-error class="mt-2" :messages="$errors->get('province')" />
-                                                </div>
-                                                <div class="relative">
-                                                    <x-input-label for="city" :value="__('City/Regency')"
-                                                        class="font-medium text-gray-700" />
-                                                    <div class="relative mt-1 rounded-md shadow-sm">
-                                                        <input id="regency_tags_{{ $address->id }}"
-                                                            class="pl-10 block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black transition appearance-none bg-none"
-                                                            placeholder="Type city/regency name..." name="regency"
-                                                            value="{{ old('regency', $address->regency) }}">
-                                                        <input type="hidden" name="regency_id"
-                                                            id="regency_id_{{ $address->id }}">
-                                                    </div>
-                                                    <x-input-error class="mt-2" :messages="$errors->get('regency')" />
-                                                </div>
-                                            </div>
-                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                                <div class="relative">
-                                                    <x-input-label for="district" :value="__('District')"
-                                                        class="font-medium text-gray-700" />
-                                                    <div class="relative mt-1 rounded-md shadow-sm">
-                                                        <input id="district_tags_{{ $address->id }}"
-                                                            class="pl-10 block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black transition appearance-none bg-none"
-                                                            placeholder="Type district name..." name="district"
-                                                            value="{{ old('district', $address->district) }}">
-                                                        <input type="hidden" name="district_id"
-                                                            id="district_id_{{ $address->id }}">
-                                                    </div>
-                                                    <x-input-error class="mt-2" :messages="$errors->get('district')" />
-                                                </div>
-                                                <div class="relative">
-                                                    <x-input-label for="village" :value="__('Village')"
-                                                        class="font-medium text-gray-700" />
-                                                    <div class="relative mt-1 rounded-md shadow-sm">
-                                                        <input id="village_tags_{{ $address->id }}"
-                                                            class="pl-10 block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black transition appearance-none bg-none"
-                                                            placeholder="Type village name..." name="village"
-                                                            value="{{ old('village', $address->village) }}">
-                                                        <input type="hidden" name="village_id"
-                                                            id="village_id_{{ $address->id }}">
-                                                    </div>
-                                                    <x-input-error class="mt-2" :messages="$errors->get('village')" />
-                                                </div>
-                                                <div class="relative">
-                                                    <x-input-label for="postal_code" :value="__('Postal Code')"
-                                                        class="font-medium text-gray-700" />
-                                                    <div class="relative mt-1 rounded-md shadow-sm">
-                                                        <x-text-input id="postal_code" name="postal_code"
-                                                            type="text"
-                                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                                                            required class="pl-10 block w-full no-spinner"
-                                                            :value="old('postal_code', $address->postal_code)" />
-                                                    </div>
-                                                    <x-input-error class="mt-2" :messages="$errors->get('postal_code')" />
-                                                </div>
-                                            </div>
-                                            <div class="flex items-center justify-end gap-4 mt-6">
-                                                <x-primary-button
-                                                    class="px-6 py-3 bg-black hover:bg-gray-800 transition-colors rounded shadow-sm">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2"
-                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                                                    </svg>
-                                                    {{ __('Edit') }}
-                                                </x-primary-button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </x-modal>
                                 <x-danger-button x-data=""
                                     x-on:click.prevent="$dispatch('open-modal', 'confirm-address-deletion-{{ $address->id }}')">{{ __('Delete') }}</x-danger-button>
 
                                 <x-modal name="confirm-address-deletion-{{ $address->id }}" :show="$errors->userDeletion->isNotEmpty()"
                                     focusable>
-                                    <form method="post" action="{{ route('delete-address', $address->id) }}" class="p-6">
+                                    <form method="post" action="{{ route('delete-address', $address->id) }}"
+                                        class="p-6">
                                         @csrf
                                         @method('delete')
 
@@ -374,17 +179,6 @@
                 @endif
             </div>
 
-            <!-- Tombol Chat Dengan Admin -->
-            <button type="button" onclick="Tawk_API.toggle()"
-                class="inline-flex items-center px-4 py-3 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-                Chat Dengan Admin
-            </button>
-
             <x-primary-button class="px-6 py-3 bg-black hover:bg-gray-800 transition-colors rounded shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -406,6 +200,8 @@
             @endif
         </div>
     </form>
+
+    {{-- modal create --}}
     <x-modal name="add-address" focusable>
         <form action="{{ route('add-address') }}" method="post">
             @csrf
@@ -663,10 +459,183 @@
             </div>
         </form>
     </x-modal>
+
+    <!-- Modal for editing address -->
+    <x-modal name="edit-address-{{ $address->id }}" focusable>
+        <form action="{{ route('edit-address', $address->id) }}" method="post">
+            @csrf
+            @method('PATCH')
+            <!-- Address Information -->
+            <div
+                class="p-6 bg-white rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
+                <h3 class="text-md font-semibold text-gray-800 mb-4 flex items-center pb-2 border-b">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-500" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    {{ __('Edit Address') }}
+                    <p>{{ $address->id }}</p>
+                </h3>
+                <!-- Name and Phone Number -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="relative">
+                        <x-input-label for="name" :value="__('Name')" class="font-medium text-gray-700" />
+                        <div class="relative mt-1 rounded-md shadow-sm">
+                            <input id="name" type="text" name="name"
+                                class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black transition appearance-none bg-none"
+                                required placeholder="Enter Name" value="{{ old('name', $address->name) }}">
+                        </div>
+                        <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                    </div>
+                    <div class="relative">
+                        <x-input-label for="no_telp" :value="__('Phone Number / WhatsApp')" class="font-medium text-gray-700" />
+                        <div class="relative mt-1 rounded-md shadow-sm">
+                            <input id="no_telp" type="text"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="no_telp"
+                                class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black transition appearance-none bg-none"
+                                placeholder="Enter Phone Number" required
+                                value="{{ old('no_telp', $address->no_telp) }}">
+                        </div>
+                        <x-input-error class="mt-2" :messages="$errors->get('no_telp')" />
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <x-input-label :value="'Country'" class="font-medium text-gray-700 mb-2" />
+                    <div class="flex gap-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="country" value="indonesia" class="form-radio text-black"
+                                {{ old('country', $address->country) == 'indonesia' ? 'checked' : '' }}>
+                            <span class="ml-2">Indonesia</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="country" value="japan" class="form-radio text-black"
+                                {{ old('country', $address->country) == 'japan' ? 'checked' : '' }}>
+                            <span class="ml-2">Japan</span>
+                        </label>
+                    </div>
+                    <x-input-error class="mt-2" :messages="$errors->get('country')" />
+                </div>
+                <div class="mb-6">
+                    <x-input-label :value="'Label'" class="font-medium text-gray-700 mb-2" />
+                    <div class="flex gap-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="label" value="home" class="form-radio text-black"
+                                {{ old('label', $address->label) == 'home' ? 'checked' : '' }}>
+                            <span class="ml-2">Home</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="label" value="office" class="form-radio text-black"
+                                {{ old('label', $address->label) == 'office' ? 'checked' : '' }}>
+                            <span class="ml-2">Office</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="label" value="other" class="form-radio text-black"
+                                {{ old('label', $address->label) == 'other' ? 'checked' : '' }}>
+                            <span class="ml-2">Other</span>
+                        </label>
+                    </div>
+                    <x-input-error class="mt-2" :messages="$errors->get('label')" />
+                </div>
+                <div class="mb-6">
+                    <x-input-label for="street" :value="__('Full Address')" class="font-medium text-gray-700" />
+                    <div class="relative mt-1 rounded-md shadow-sm">
+                        <textarea id="street" name="street"
+                            class="pl-10 block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black transition"
+                            required rows="3">{{ old('street', $address->street) }}</textarea>
+                    </div>
+                    <x-input-error class="mt-2" :messages="$errors->get('street')" />
+                </div>
+                <div class="mb-6">
+                    <x-input-label for="detail" :value="__('Details')" class="font-medium text-gray-700" />
+                    <div class="relative mt-1 rounded-md shadow-sm">
+                        <input id="detail" name="detail"
+                            class="pl-10 block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black transition"
+                            value="{{ old('detail', $address->detail) }}" rows="3" required>
+                    </div>
+                    <x-input-error class="mt-2" :messages="$errors->get('detail')" />
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="relative">
+                        <x-input-label for="province" :value="__('Province')" class="font-medium text-gray-700" />
+                        <div class="relative mt-1 rounded-md shadow-sm">
+                            <input id="province_tags_{{ $address->id }}"
+                                class="pl-10 block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black transition appearance-none bg-none"
+                                placeholder="Type province name..." name="province"
+                                value="{{ old('province', $address->province) }}">
+                            <input type="hidden" name="province_id" id="province_id_{{ $address->id }}"
+                                value="{{ old('province_id', $address->province_id) }}">
+                        </div>
+                        <x-input-error class="mt-2" :messages="$errors->get('province')" />
+                    </div>
+                    <div class="relative">
+                        <x-input-label for="city" :value="__('City/Regency')" class="font-medium text-gray-700" />
+                        <div class="relative mt-1 rounded-md shadow-sm">
+                            <input id="regency_tags_{{ $address->id }}"
+                                class="pl-10 block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black transition appearance-none bg-none"
+                                placeholder="Type city/regency name..." name="regency"
+                                value="{{ old('regency', $address->regency) }}">
+                            <input type="hidden" name="regency_id" id="regency_id_{{ $address->id }}"
+                                value="{{ old('regency_id', $address->regency_id) }}">
+                        </div>
+                        <x-input-error class="mt-2" :messages="$errors->get('regency')" />
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="relative">
+                        <x-input-label for="district" :value="__('District')" class="font-medium text-gray-700" />
+                        <div class="relative mt-1 rounded-md shadow-sm">
+                            <input id="district_tags_{{ $address->id }}"
+                                class="pl-10 block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black transition appearance-none bg-none"
+                                placeholder="Type district name..." name="district"
+                                value="{{ old('district', $address->district) }}">
+                            <input type="hidden" name="district_id" id="district_id_{{ $address->id }}"
+                                value="{{ old('district_id', $address->district_id) }}">
+                        </div>
+                        <x-input-error class="mt-2" :messages="$errors->get('district')" />
+                    </div>
+                    <div class="relative">
+                        <x-input-label for="village" :value="__('Village')" class="font-medium text-gray-700" />
+                        <div class="relative mt-1 rounded-md shadow-sm">
+                            <input id="village_tags_{{ $address->id }}"
+                                class="pl-10 block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black transition appearance-none bg-none"
+                                placeholder="Type village name..." name="village"
+                                value="{{ old('village', $address->village) }}">
+                            <input type="hidden" name="village_id" id="village_id_{{ $address->id }}"
+                                value="{{ old('village_id', $address->village_id) }}">
+                        </div>
+                        <x-input-error class="mt-2" :messages="$errors->get('village')" />
+                    </div>
+                    <div class="relative">
+                        <x-input-label for="postal_code" :value="__('Postal Code')" class="font-medium text-gray-700" />
+                        <div class="relative mt-1 rounded-md shadow-sm">
+                            <x-text-input id="postal_code" name="postal_code" type="text"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')" required
+                                class="pl-10 block w-full no-spinner" :value="old('postal_code', $address->postal_code)" />
+                        </div>
+                        <x-input-error class="mt-2" :messages="$errors->get('postal_code')" />
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-4 mt-6">
+                    <x-primary-button class="px-6 py-3 bg-black hover:bg-gray-800 transition-colors rounded shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                        </svg>
+                        {{ __('Edit') }}
+                    </x-primary-button>
+                </div>
+            </div>
+        </form>
+    </x-modal>
 </section>
 
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+{{-- new address --}}
 <script>
     $(function() {
         // Province autocomplete
@@ -801,6 +770,153 @@
                 }
             });
         }
+    });
+</script>
+
+{{-- edit address --}}
+<script>
+    $(function() {
+        @if (isset($user) && $user->address && $user->address->count())
+            @foreach ($user->address as $address)
+                // Province autocomplete for edit modal
+                $.ajax({
+                    url: '/provinces',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        const availableProvinces = data.map(function(item) {
+                            return {
+                                label: item.name,
+                                value: item.id
+                            };
+                        });
+
+                        $("#province_tags_{{ $address->id }}").autocomplete({
+                            source: availableProvinces,
+                            select: function(event, ui) {
+                                $("#province_tags_{{ $address->id }}").val(ui.item
+                                    .label);
+                                $("#province_id_{{ $address->id }}").val(ui.item
+                                    .value);
+
+                                // Clear and reset regency, district, and village fields
+                                $("#regency_tags_{{ $address->id }}").val('');
+                                $("#regency_id_{{ $address->id }}").val('');
+                                $("#district_tags_{{ $address->id }}").val('');
+                                $("#district_id_{{ $address->id }}").val('');
+                                $("#village_tags_{{ $address->id }}").val('');
+                                $("#village_id_{{ $address->id }}").val('');
+
+                                // Fetch regencies for the selected province
+                                fetchRegencies_{{ $address->id }}(ui.item.value);
+
+                                return false;
+                            }
+                        });
+                    }
+                });
+
+                function fetchRegencies_{{ $address->id }}(provinceId) {
+                    $.ajax({
+                        url: '/regency/' + provinceId,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            const availableRegencies = data.map(function(item) {
+                                return {
+                                    label: item.name,
+                                    value: item.id
+                                };
+                            });
+
+                            $("#regency_tags_{{ $address->id }}").autocomplete({
+                                source: availableRegencies,
+                                select: function(event, ui) {
+                                    $("#regency_tags_{{ $address->id }}").val(ui.item
+                                        .label);
+                                    $("#regency_id_{{ $address->id }}").val(ui.item
+                                        .value);
+
+                                    // Clear and reset district and village fields
+                                    $("#district_tags_{{ $address->id }}").val('');
+                                    $("#district_id_{{ $address->id }}").val('');
+                                    $("#village_tags_{{ $address->id }}").val('');
+                                    $("#village_id_{{ $address->id }}").val('');
+
+                                    // Fetch districts for the selected regency
+                                    fetchDistricts_{{ $address->id }}(ui.item.value);
+
+                                    return false;
+                                }
+                            });
+                        }
+                    });
+                }
+
+                function fetchDistricts_{{ $address->id }}(regencyId) {
+                    $.ajax({
+                        url: '/district/' + regencyId,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            const availableDistricts = data.map(function(item) {
+                                return {
+                                    label: item.name,
+                                    value: item.id
+                                };
+                            });
+
+                            $("#district_tags_{{ $address->id }}").autocomplete({
+                                source: availableDistricts,
+                                select: function(event, ui) {
+                                    $("#district_tags_{{ $address->id }}").val(ui.item
+                                        .label);
+                                    $("#district_id_{{ $address->id }}").val(ui.item
+                                        .value);
+
+                                    // Clear and reset village field
+                                    $("#village_tags_{{ $address->id }}").val('');
+                                    $("#village_id_{{ $address->id }}").val('');
+
+                                    // Fetch villages for the selected district
+                                    fetchVillages_{{ $address->id }}(ui.item.value);
+
+                                    return false;
+                                }
+                            });
+                        }
+                    });
+                }
+
+                function fetchVillages_{{ $address->id }}(districtId) {
+                    $.ajax({
+                        url: '/village/' + districtId,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            const availableVillages = data.map(function(item) {
+                                return {
+                                    label: item.name,
+                                    value: item.id
+                                };
+                            });
+
+                            $("#village_tags_{{ $address->id }}").autocomplete({
+                                source: availableVillages,
+                                select: function(event, ui) {
+                                    $("#village_tags_{{ $address->id }}").val(ui.item
+                                        .label);
+                                    $("#village_id_{{ $address->id }}").val(ui.item
+                                        .value);
+
+                                    return false;
+                                }
+                            });
+                        }
+                    });
+                }
+            @endforeach
+        @endif
     });
 </script>
 @push('scripts')
