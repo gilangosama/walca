@@ -196,8 +196,75 @@
                         <div class="md:col-span-2 text-center">Total</div>
                     </div>
 
-                    <div class="divide-y divide-gray-800">
-                        <!-- Cart items will be dynamically inserted here -->
+                    <div class="divide-y divide-gray-800" id="cart-items-container">
+                        @php
+                            $subtotal = 0;
+                            $hasItems = false;
+                        @endphp
+                        
+                        @if(Auth::check() && isset($cartItems) && $cartItems->count() > 0)
+                            @php $hasItems = true; @endphp
+                            @foreach($cartItems as $item)
+                                @php
+                                    $itemTotal = $item->product->price * $item->quantity;
+                                    $subtotal += $itemTotal;
+                                    $productImage = $item->product->image[0] ?? '';
+                                @endphp
+                                
+                                <div class="cart-item py-6 md:grid md:grid-cols-12 md:gap-4 md:items-center" data-id="{{ $item->id }}">
+                                    <div class="md:col-span-6 flex items-start space-x-4">
+                                        <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-700">
+                                            <img src="{{ $productImage }}" alt="{{ $item->product->name }}" class="h-full w-full object-cover object-center">
+                                        </div>
+                                        <div class="flex flex-col product-details">
+                                            <h3 class="product-name">{{ $item->product->name }}</h3>
+                                            @if($item->size)
+                                                <p class="mt-1 product-size">Ukuran: {{ $item->size }}</p>
+                                            @endif
+                                            @if($item->color)
+                                                <p class="mt-1 product-size">Warna: {{ $item->color }}</p>
+                                            @endif
+                                            @if($item->jenis)
+                                                <p class="mt-1 product-size">Jenis: {{ $item->jenis }}</p>
+                                            @endif
+                                            <form method="POST" action="{{ route('cart.remove', $item->id) }}" class="mt-2 inline-block">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="remove-btn text-sm flex items-center">
+                                                    <i class="fas fa-trash mr-1"></i> Hapus
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="md:col-span-2 text-center mt-4 md:mt-0">
+                                        <p class="product-price">{{ 'Rp ' . number_format($item->product->price, 0, ',', '.') }}</p>
+                                    </div>
+                                    <div class="md:col-span-2 flex justify-center mt-4 md:mt-0">
+                                        <div class="flex items-center">
+                                            <form method="POST" action="{{ route('cart.update', $item->id) }}" class="flex">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="button" class="quantity-btn rounded-l-md decrement-btn">
+                                                    <i class="fas fa-minus text-xs"></i>
+                                                </button>
+                                                <input type="number" name="quantity" value="{{ $item->quantity }}" class="quantity-input h-[35px]" min="1">
+                                                <button type="button" class="quantity-btn rounded-r-md increment-btn">
+                                                    <i class="fas fa-plus text-xs"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="md:col-span-2 text-center mt-4 md:mt-0">
+                                        <p class="item-total product-price">{{ 'Rp ' . number_format($itemTotal, 0, ',', '.') }}</p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <!-- Ini akan diisi oleh JavaScript untuk user yang belum login -->
+                            <div id="cart-placeholder" class="py-6 text-center">
+                                <p class="text-gray-500">Memuat keranjang belanja...</p>
+                            </div>
+                        @endif
                     </div>
 
                     <!-- Continue Shopping -->
@@ -217,7 +284,7 @@
                         <div class="space-y-4">
                             <div class="flex justify-between">
                                 <p class="text-gray-300">Subtotal</p>
-                                <p class="font-medium text-white order-summary-subtotal">Rp 0</p>
+                                <p class="font-medium text-white order-summary-subtotal">{{ 'Rp ' . number_format($subtotal ?? 0, 0, ',', '.') }}</p>
                             </div>
                             <div class="flex justify-between">
                                 <p class="text-gray-300">Pengiriman</p>
@@ -228,13 +295,28 @@
                         
                             <div class="flex justify-between">
                                 <p class="text-lg font-medium text-white">Total</p>
-                                <p class="text-lg font-medium text-white order-summary-total">Rp 0</p>
+                                <p class="text-lg font-medium text-white order-summary-total">{{ 'Rp ' . number_format($subtotal ?? 0, 0, ',', '.') }}</p>
                             </div>
                         </div>
                         
-                        <button id="checkoutButton" class="checkout-btn w-full mt-6">
-                            Lanjut ke Pembayaran
-                        </button>
+                        @if(Auth::check())
+                            @if(isset($cartItems) && $cartItems->count() > 0)
+                                <form action="{{ route('cart.checkoutToSession') }}" method="POST" id="checkoutForm">
+                                    @csrf
+                                    <button type="submit" id="checkoutButton" class="checkout-btn w-full mt-6">
+                                        Lanjut ke Pembayaran
+                                    </button>
+                                </form>
+                            @else
+                                <button disabled class="checkout-btn disabled w-full mt-6">
+                                    Lanjut ke Pembayaran
+                                </button>
+                            @endif
+                        @else
+                            <button id="localCheckoutButton" class="checkout-btn w-full mt-6">
+                                Lanjut ke Pembayaran
+                            </button>
+                        @endif
                     </div>
 
                     <!-- Payment Methods -->
@@ -251,157 +333,223 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Load cart items from localStorage
-            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-            const cartContainer = document.querySelector('.divide-y.divide-gray-800');
+            // Check if user is authenticated
+            const isAuthenticated = {{ Auth::check() ? 'true' : 'false' }};
             
-            // Format harga
-            const formatter = new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                minimumFractionDigits: 0
-            });
-            
-            if (cartItems.length > 0) {
-                // Kosongkan cart container terlebih dahulu
-                cartContainer.innerHTML = '';
-                
-                // Hitung total keseluruhan
-                let subtotal = 0;
-                
-                // Loop semua item di keranjang
-                cartItems.forEach((item, index) => {
-                    // Hitung total per item
-                    const itemTotal = item.price * item.quantity;
-                    subtotal += itemTotal;
-                    
-                    // Buat element cart item
-                    const cartItemHTML = `
-                        <div class="cart-item py-6 md:grid md:grid-cols-12 md:gap-4 md:items-center" data-index="${index}">
-                            <div class="md:col-span-6 flex items-start space-x-4">
-                                <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-700">
-                                    <img src="${item.productImage}" alt="${item.productName}" class="h-full w-full object-cover object-center">
-                                </div>
-                                <div class="flex flex-col product-details">
-                                    <h3 class="product-name">${item.productName}</h3>
-                                    <p class="mt-1 product-size">Ukuran: ${item.size}</p>
-                                    <button class="remove-btn mt-2 text-sm flex items-center md:hidden" onclick="removeCartItem(${index})">
-                                        <i class="fas fa-trash mr-1"></i> Hapus
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="md:col-span-2 text-center mt-4 md:mt-0">
-                                <p class="product-price">${formatter.format(item.price)}</p>
-                            </div>
-                            <div class="md:col-span-2 flex justify-center mt-4 md:mt-0">
-                                <div class="flex items-center">
-                                    <button class="quantity-btn rounded-l-md" onclick="updateQuantity(${index}, -1)">
-                                        <i class="fas fa-minus text-xs"></i>
-                                    </button>
-                                    <input type="text" value="${item.quantity}" class="quantity-input h-[35px]" readonly>
-                                    <button class="quantity-btn rounded-r-md" onclick="updateQuantity(${index}, 1)">
-                                        <i class="fas fa-plus text-xs"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="md:col-span-2 text-center mt-4 md:mt-0">
-                                <p class="item-total product-price">${formatter.format(itemTotal)}</p>
-                                <button class="remove-btn hidden md:inline-flex items-center mt-2" onclick="removeCartItem(${index})">
-                                    <i class="fas fa-trash mr-1"></i> Hapus
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    
-                    // Tambahkan ke container
-                    cartContainer.innerHTML += cartItemHTML;
-                });
-                
-                // Update subtotal dan total di ringkasan
-                document.querySelectorAll('.order-summary-subtotal').forEach(el => {
-                    el.textContent = formatter.format(subtotal);
-                });
-                document.querySelectorAll('.order-summary-total').forEach(el => {
-                    el.textContent = formatter.format(subtotal);
-                });
-                
-                // Enable tombol checkout
-                const checkoutButton = document.getElementById('checkoutButton');
-                if (checkoutButton) {
-                    checkoutButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                    checkoutButton.onclick = function() {
-                        // Ambil cart dari localStorage
-                        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-                        // Kirim ke backend
-                        fetch('/cart/checkout', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({ orderItems: cartItems })
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) {
-                                window.location.href = "{{ route('checkout') }}";
-                            }
-                        });
-                    };
-                }
-            } else {
-                // Jika tidak ada item di cart
-                cartContainer.innerHTML = `
-                    <div class="py-6 text-center">
-                        <p class="text-gray-500">Keranjang belanja Anda kosong.</p>
-                        <a href="{{ route('shops') }}" class="mt-4 inline-block text-sm font-medium text-black">
-                            Belanja Sekarang
-                        </a>
-                    </div>
-                `;
-                
-                // Disable tombol checkout
-                const checkoutButton = document.getElementById('checkoutButton');
-                if (checkoutButton) {
-                    checkoutButton.classList.add('opacity-50', 'cursor-not-allowed');
-                    checkoutButton.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        alert('Keranjang belanja Anda kosong.');
-                    });
+            // Jika ada pending cart migration dari localStorage
+            if (isAuthenticated) {
+                const pendingCartMigration = sessionStorage.getItem('pendingCartMigration');
+                if (pendingCartMigration) {
+                    // Kirim data keranjang ke server
+                    migrateCartToDatabase(JSON.parse(pendingCartMigration));
+                    // Hapus data pending
+                    sessionStorage.removeItem('pendingCartMigration');
+                    // Hapus keranjang dari localStorage
+                    localStorage.removeItem('cartItems');
                 }
             }
             
-            // Fungsi untuk update quantity
-            window.updateQuantity = function(index, change) {
+            // Handle keranjang untuk user yang belum login
+            if (!isAuthenticated) {
+                loadLocalStorageCart();
+            }
+            
+            // Quantity buttons untuk user yang sudah login
+            document.querySelectorAll('.increment-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const input = this.parentNode.querySelector('input[name="quantity"]');
+                    input.value = parseInt(input.value) + 1;
+                    updateCart(this.closest('form'));
+                });
+            });
+            
+            document.querySelectorAll('.decrement-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const input = this.parentNode.querySelector('input[name="quantity"]');
+                    if (parseInt(input.value) > 1) {
+                        input.value = parseInt(input.value) - 1;
+                        updateCart(this.closest('form'));
+                    }
+                });
+            });
+            
+            // Form checkout untuk user yang sudah login
+            const checkoutForm = document.getElementById('checkoutForm');
+            if (checkoutForm) {
+                checkoutForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    fetch(this.action, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({})
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = "{{ route('checkout') }}";
+                        } else {
+                            alert(data.message || 'Terjadi kesalahan');
+                        }
+                    });
+                });
+            }
+            
+            // Local checkout button untuk user yang belum login
+            const localCheckoutButton = document.getElementById('localCheckoutButton');
+            if (localCheckoutButton) {
+                localCheckoutButton.addEventListener('click', function() {
+                    window.location.href = "{{ route('login', ['redirect' => route('cart')]) }}";
+                });
+            }
+            
+            // Function update cart untuk user yang sudah login
+            function updateCart(form) {
+                const formData = new FormData(form);
+                const url = form.action;
+                
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-HTTP-Method-Override': 'PATCH'
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    }
+                });
+            }
+            
+            // Function load cart dari localStorage untuk user yang belum login
+            function loadLocalStorageCart() {
                 const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-                const item = cartItems[index];
+                const cartContainer = document.getElementById('cart-items-container');
+                const placeholder = document.getElementById('cart-placeholder');
                 
-                if (!item) return;
+                if (placeholder) {
+                    if (cartItems.length > 0) {
+                        // Kosongkan placeholder
+                        placeholder.remove();
+                        
+                        // Format currency
+                        const formatter = new Intl.NumberFormat('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                            minimumFractionDigits: 0
+                        });
+                        
+                        // Hitung subtotal
+                        let subtotal = 0;
+                        
+                        // Render cart items
+                        cartItems.forEach((item, index) => {
+                            const itemTotal = item.price * item.quantity;
+                            subtotal += itemTotal;
+                            
+                            const cartItemElement = document.createElement('div');
+                            cartItemElement.className = 'cart-item py-6 md:grid md:grid-cols-12 md:gap-4 md:items-center';
+                            cartItemElement.dataset.index = index;
+                            
+                            cartItemElement.innerHTML = `
+                                <div class="md:col-span-6 flex items-start space-x-4">
+                                    <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-700">
+                                        <img src="${item.productImage}" alt="${item.productName}" class="h-full w-full object-cover object-center">
+                                    </div>
+                                    <div class="flex flex-col product-details">
+                                        <h3 class="product-name">${item.productName}</h3>
+                                        ${item.size ? `<p class="mt-1 product-size">Ukuran: ${item.size}</p>` : ''}
+                                        ${item.color ? `<p class="mt-1 product-size">Warna: ${item.color}</p>` : ''}
+                                        ${item.jenis ? `<p class="mt-1 product-size">Jenis: ${item.jenis}</p>` : ''}
+                                        <button type="button" class="remove-btn mt-2 text-sm flex items-center" onclick="removeCartItem(${index})">
+                                            <i class="fas fa-trash mr-1"></i> Hapus
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="md:col-span-2 text-center mt-4 md:mt-0">
+                                    <p class="product-price">${formatter.format(item.price)}</p>
+                                </div>
+                                <div class="md:col-span-2 flex justify-center mt-4 md:mt-0">
+                                    <div class="flex items-center">
+                                        <button type="button" class="quantity-btn rounded-l-md" onclick="updateLocalQuantity(${index}, -1)">
+                                            <i class="fas fa-minus text-xs"></i>
+                                        </button>
+                                        <input type="text" value="${item.quantity}" class="quantity-input h-[35px]" readonly>
+                                        <button type="button" class="quantity-btn rounded-r-md" onclick="updateLocalQuantity(${index}, 1)">
+                                            <i class="fas fa-plus text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="md:col-span-2 text-center mt-4 md:mt-0">
+                                    <p class="item-total product-price">${formatter.format(itemTotal)}</p>
+                                </div>
+                            `;
+                            
+                            cartContainer.appendChild(cartItemElement);
+                        });
+                        
+                        // Update subtotal dan total
+                        document.querySelectorAll('.order-summary-subtotal, .order-summary-total').forEach(el => {
+                            el.textContent = formatter.format(subtotal);
+                        });
+                    } else {
+                        // Jika keranjang kosong
+                        placeholder.innerHTML = `
+                            <p class="text-gray-500">Keranjang belanja Anda kosong.</p>
+                            <a href="{{ route('shops') }}" class="mt-4 inline-block text-sm font-medium text-white">
+                                Belanja Sekarang
+                            </a>
+                        `;
+                        
+                        // Disable checkout button
+                        if (localCheckoutButton) {
+                            localCheckoutButton.disabled = true;
+                            localCheckoutButton.classList.add('disabled');
+                        }
+                    }
+                }
+            }
+            
+            // Migrate cart dari localStorage ke database
+            function migrateCartToDatabase(cartItems) {
+                fetch('{{ route("cart.migrate") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ cartItems })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Keranjang berhasil dimigrasi: ' + data.message);
+                    }
+                });
+            }
+            
+            // Global functions untuk user yang belum login
+            window.updateLocalQuantity = function(index, change) {
+                const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+                if (!cartItems[index]) return;
                 
-                // Update quantity dengan batas minimal 1
-                const newQuantity = Math.max(1, item.quantity + change);
-                item.quantity = newQuantity;
-                
-                // Simpan kembali ke localStorage
+                cartItems[index].quantity = Math.max(1, cartItems[index].quantity + change);
                 localStorage.setItem('cartItems', JSON.stringify(cartItems));
-                
-                // Refresh halaman untuk menampilkan perubahan
                 location.reload();
             };
             
-            // Fungsi untuk menghapus item
             window.removeCartItem = function(index) {
                 const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-                
                 if (!cartItems[index]) return;
                 
-                // Hapus item dari array
                 cartItems.splice(index, 1);
-                
-                // Simpan kembali ke localStorage
                 localStorage.setItem('cartItems', JSON.stringify(cartItems));
-                
-                // Refresh halaman untuk menampilkan perubahan
                 location.reload();
             };
         });

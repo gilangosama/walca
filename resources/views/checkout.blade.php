@@ -320,8 +320,7 @@
                         <label class="checkout-dark-label">Choose Payment Method</label>
                         <select id="paymentMethod" name="payment_method" class="form-select" required>
                             <option value="" selected disabled>Select Payment Method</option>
-                            <option value="bank">Bank Transfer</option>
-                            <option value="ewallet">E-Wallet</option>
+                            <option value="midtrans">Midtrans Payment Gateway</option>
                             <option value="cod">Cash on Delivery (COD)</option>
                         </select>
                     </div>
