@@ -41,7 +41,11 @@ class AddressController extends Controller
     }
 
     public function edit($id) {
-        dd($id);
+        $address = Address::findOrFail($id);
+        // dd($address);
+        return view('profile.formAddress', [
+            'address' => $address,
+        ]);
     }
 
     public function addAddress(Request $request)
@@ -82,7 +86,7 @@ class AddressController extends Controller
         return redirect()->back()->with('status', 'Alamat berhasil ditambahkan.');
     }
 
-    public function editAddress(Request $request, $id)
+    public function update(Request $request, $id)
     {
         dd($request->all());
         $validated = $request->validate([

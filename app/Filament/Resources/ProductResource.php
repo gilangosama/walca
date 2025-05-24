@@ -49,19 +49,38 @@ class ProductResource extends Resource
                 ->placeholder('Enter variants separated by commas')
                 ->required()
                 ->afterStateHydrated(fn($state, Forms\Set $set) => $set('jenis', is_array($state) ? implode(', ', $state) : $state))
-                ->dehydrateStateUsing(fn($state) => array_map('trim', explode(',', $state))),
+                ->dehydrateStateUsing(
+                    fn($state) =>
+                    is_string($state)
+                        ? array_map('trim', explode(',', $state))
+                        : $state // biarkan jika sudah array
+                ),
             TextInput::make('size')
                 ->label('Size')
                 ->placeholder('Enter size separated by commas')
                 ->required()
-                ->afterStateHydrated(fn($state, Forms\Set $set) => $set('jenis', is_array($state) ? implode(', ', $state) : $state))
-                ->dehydrateStateUsing(fn($state) => array_map('trim', explode(',', $state))),
+                ->afterStateHydrated(
+                    fn($state, Forms\Set $set) =>
+                    $set('size', is_array($state) ? implode(', ', $state) : $state)
+                )
+                ->dehydrateStateUsing(
+                    fn($state) =>
+                    is_string($state)
+                        ? array_map('trim', explode(',', $state))
+                        : $state // biarkan jika sudah array
+                ),
+
             TextInput::make('color')
                 ->label('Color')
                 ->placeholder('Enter color separated by commas')
                 ->required()
                 ->afterStateHydrated(fn($state, Forms\Set $set) => $set('jenis', is_array($state) ? implode(', ', $state) : $state))
-                ->dehydrateStateUsing(fn($state) => array_map('trim', explode(',', $state))),
+                ->dehydrateStateUsing(
+                    fn($state) =>
+                    is_string($state)
+                        ? array_map('trim', explode(',', $state))
+                        : $state // biarkan jika sudah array
+                ),
             FileUpload::make('image')
                 ->label('Gambar')
                 ->columnSpan('full')
