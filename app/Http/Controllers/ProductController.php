@@ -23,23 +23,32 @@ class ProductController extends Controller
 
     public function addKeranjang(Request $request)
     {
-        dd($request->all());
+        // Pastikan user sudah login
+        if (!Auth::check()) {
+            return redirect()->route('login', ['redirect' => route('cart')]);
+        }
+        
         $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity'   => 'required|integer|min:1',
-            // tambahkan validasi size jika diperlukan
             'size'       => 'nullable|string|max:50',
-            'color'       => 'nullable|string|max:50',
-            'jenis'       => 'nullable|string|max:50',
+            'color'      => 'nullable|string|max:50',
+            'jenis'      => 'nullable|string|max:50',
         ]);
 
         $userId = Auth::id();
 
-        // Cek apakah produk dengan size yang sama sudah ada di keranjang user
+        // Cek apakah produk dengan kriteria yang sama sudah ada di keranjang user
         $keranjang = Keranjang::where('user_id', $userId)
             ->where('product_id', $validated['product_id'])
             ->when(isset($validated['size']), function ($query) use ($validated) {
                 $query->where('size', $validated['size']);
+            })
+            ->when(isset($validated['color']), function ($query) use ($validated) {
+                $query->where('color', $validated['color']);
+            })
+            ->when(isset($validated['jenis']), function ($query) use ($validated) {
+                $query->where('jenis', $validated['jenis']);
             })
             ->first();
 

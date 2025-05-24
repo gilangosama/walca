@@ -304,7 +304,7 @@
         </div>
     </div>
 
-    <!-- Language and Currency Dropdown Menu -->
+    {{-- <!-- Language and Currency Dropdown Menu -->
     <div x-show="languageOpen" 
          @click.away="languageOpen = false" 
          class="fixed top-16 right-0 bg-black shadow-lg p-6 rounded-bl-md z-60 w-72 border border-gray-800 text-white">
@@ -356,7 +356,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Search Panel -->
     <div x-show="searchOpen" 

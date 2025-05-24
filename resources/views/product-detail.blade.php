@@ -666,7 +666,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Kembali ke Toko
+                Back to Store
             </a>
 
             <div class="flex flex-col md:flex-row gap-10 lg:gap-16">
@@ -674,19 +674,34 @@
                 <div class="w-full md:w-1/2">
                     <!-- Main Product Image -->
                     <div class="mb-4 product-image-container">
-                        <img id="mainImage" src="{{ asset('img/1.jpg') }}" alt="BOXY HOODIE"
-                            class="w-full h-auto object-cover">
+                        @if(isset($product->image) && is_array($product->image) && count($product->image) > 0)
+                            <img id="mainImage" src="{{ asset('storage/product/' . $product->image[0]) }}" alt="{{ $product->name }}"
+                                class="w-full h-auto object-cover">
+                        @else
+                            <img id="mainImage" src="{{ asset('img/1.jpg') }}" alt="{{ $product->name }}"
+                                class="w-full h-auto object-cover">
+                        @endif
                     </div>
 
                     <!-- Thumbnails -->
                     <div class="flex gap-3 justify-center mt-6">
-                        <img src="{{ asset('img/1.jpg') }}" alt="BOXY HOODIE Thumbnail 1"
-                            class="product-image-thumbnail active"
-                            onclick="changeImage('{{ asset('img/1.jpg') }}', this)">
-                        <img src="{{ asset('img/2.jpg') }}" alt="BOXY HOODIE Thumbnail 2"
-                            class="product-image-thumbnail" onclick="changeImage('{{ asset('img/2.jpg') }}', this)">
-                        <img src="{{ asset('img/3.jpg') }}" alt="BOXY HOODIE Thumbnail 3"
-                            class="product-image-thumbnail" onclick="changeImage('{{ asset('img/3.jpg') }}', this)">
+                        @if(isset($product->image) && is_array($product->image))
+                            @foreach($product->image as $index => $image)
+                                <img src="{{ asset('storage/' . $image) }}" alt="{{ $product->name }} Thumbnail {{ $index + 1 }}"
+                                    class="product-image-thumbnail {{ $index === 0 ? 'active' : '' }}"
+                                    onclick="changeImage('{{ asset('storage/' . $image) }}', this)">
+                            @endforeach
+                        @else
+                            <img src="{{ asset('img/1.jpg') }}" alt="{{ $product->name }} Thumbnail 1"
+                                class="product-image-thumbnail active"
+                                onclick="changeImage('{{ asset('img/1.jpg') }}', this)">
+                            <img src="{{ asset('img/2.jpg') }}" alt="{{ $product->name }} Thumbnail 2"
+                                class="product-image-thumbnail" 
+                                onclick="changeImage('{{ asset('img/2.jpg') }}', this)">
+                            <img src="{{ asset('img/3.jpg') }}" alt="{{ $product->name }} Thumbnail 3"
+                                class="product-image-thumbnail" 
+                                onclick="changeImage('{{ asset('img/3.jpg') }}', this)">
+                        @endif
                     </div>
                 </div>
 
@@ -731,6 +746,25 @@
                         </div>
                         <input type="hidden" id="selectedSize" name="size" value="">
                     </div>
+
+                    <!-- Color Selection -->
+                    <div class="info-section">
+                        <h3 class="info-title">Color</h3>
+                        <div class="grid grid-cols-3 gap-2 mb-4 max-w-xs">
+                            @if (is_array($product->color) || is_object($product->color))
+                                @foreach ($product->color as $colorItem)
+                                    <button type="button" class="size-btn text-center py-2 text-sm"
+                                        onclick="selectColor(this, '{{ $colorItem }}')">
+                                        {{ $colorItem }}
+                                    </button>
+                                @endforeach
+                            @else
+                                <p class="text-sm text-red-500">Color information is not available.</p>
+                            @endif
+                        </div>
+                        <input type="hidden" id="selectedColor" name="color" value="">
+                    </div>
+                    
 
                     <!-- Quantity Selection -->
                     <div class="info-section">
@@ -782,9 +816,7 @@
                         </div>
 
                         <div class="refund-notice">
-                            <p class="font-medium">PENGEMBALIAN AKAN DIPROSES JIKA ADA BUKTI VIDEO UNBOXING DAN JIKA
-                                ADA
-                                KESALAHAN ATAU BARANG RUSAK DARI KAMI, TERIMA KASIH ATAS PERHATIANNYA</p>
+                            <p class="font-medium">RETURNS WILL BE PROCESSED IF THERE IS VIDEO EVIDENCE OF UNBOXING AND IF THERE IS ANY MISTAKE OR DAMAGED ITEM FROM US, THANK YOU FOR YOUR ATTENTION</p>
                         </div>
 
                         <!-- Customer Service Button -->
@@ -800,53 +832,43 @@
             <div class="mt-16">
                 <h2 class="related-title">Related Products</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Related Product 1 -->
-                    <a href="{{ route('product.detail', 'hat-chambredelavain-font-bk') }}"
-                        class="related-product group">
-                        <div class="relative related-image">
-                            <div class="stok-badge">OUT OF STOCK</div>
-                            <img src="{{ asset('img/1.jpg') }}" alt="Hat"
-                                class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
-                        </div>
-                        <h3 class="text-sm font-medium mb-1">Hat Chambredelavain - Font BK</h3>
-                        <p class="text-base font-bold mb-1">Rp 180,000</p>
-                    </a>
+                    <!-- Related Products (Ideally, this would be dynamically generated based on related products) -->
+                    @php
+                        // Simulate related products by getting products from the same categories
+                        $relatedProducts = \App\Models\Product::whereHas('categories', function($query) use ($product) {
+                            $query->whereIn('categories.id', $product->categories->pluck('id'));
+                        })
+                        ->where('id', '!=', $product->id)
+                        ->take(4)
+                        ->get();
+                        
+                        // Jika tidak ada produk terkait, ambil produk terbaru
+                        if($relatedProducts->isEmpty()) {
+                            $relatedProducts = \App\Models\Product::where('id', '!=', $product->id)
+                                ->latest()
+                                ->take(4)
+                                ->get();
+                        }
+                    @endphp
 
-                    <!-- Related Product 2 -->
-                    <a href="{{ route('product.detail', 'boxy-tee-chambredelavain-logo-type-gr') }}"
-                        class="related-product group">
+                    @foreach($relatedProducts as $relatedProduct)
+                    <a href="{{ route('product.detail', $relatedProduct->slug) }}" class="related-product group">
                         <div class="relative related-image">
-                            <div class="stok-badge">OUT OF STOCK</div>
-                            <img src="{{ asset('img/3.jpg') }}" alt="Tee"
-                                class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                            @if($relatedProduct->stock <= 0)
+                                <div class="stok-badge">OUT OF STOCK</div>
+                            @endif
+                            @if(isset($relatedProduct->image) && is_array($relatedProduct->image) && count($relatedProduct->image) > 0)
+                                <img src="{{ asset('storage/product/' . $relatedProduct->image[0]) }}" alt="{{ $relatedProduct->name }}"
+                                    class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                            @else
+                                <img src="{{ asset('img/1.jpg') }}" alt="{{ $relatedProduct->name }}"
+                                    class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                            @endif
                         </div>
-                        <h3 class="text-sm font-medium mb-1">BOXY TEE CHAMBREDELAVAIN -LOGO TYPE GR</h3>
-                        <p class="text-base font-bold mb-1">Rp 240,000</p>
+                        <h3 class="text-sm font-medium mb-1">{{ $relatedProduct->name }}</h3>
+                        <p class="text-base font-bold mb-1">{{ $relatedProduct->price }}</p>
                     </a>
-
-                    <!-- Related Product 3 -->
-                    <a href="{{ route('product.detail', 'boxy-tee-chambredelavain-logo-type-bk') }}"
-                        class="related-product group">
-                        <div class="relative related-image">
-                            <div class="stok-badge">OUT OF STOCK</div>
-                            <img src="{{ asset('img/2.jpg') }}" alt="Product"
-                                class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
-                        </div>
-                        <h3 class="text-sm font-medium mb-1">BOXY TEE CHAMBREDELAVAIN -LOGO TYPE BK</h3>
-                        <p class="text-base font-bold mb-1">Rp 240,000</p>
-                    </a>
-
-                    <!-- Related Product 4 -->
-                    <a href="{{ route('product.detail', 'cardigan-chambredelavain-basic-black') }}"
-                        class="related-product group">
-                        <div class="relative related-image">
-                            <div class="stok-badge">OUT OF STOCK</div>
-                            <img src="{{ asset('img/1.jpg') }}" alt="Product"
-                                class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
-                        </div>
-                        <h3 class="text-sm font-medium mb-1">CARDIGAN CHAMBREDELAVAIN - BASIC BLACK</h3>
-                        <p class="text-base font-bold mb-1">Rp 385,000</p>
-                    </a>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -964,6 +986,20 @@
             document.getElementById('selectedSize').value = size;
         }
 
+        // Color selection
+        function selectColor(button, color) {
+            // Remove active class from all color buttons
+            document.querySelectorAll('#selectedColor').closest('.info-section').querySelectorAll('.size-btn').forEach(btn => {
+                btn.classList.remove('bg-black', 'text-white');
+            });
+
+            // Add active class to selected button
+            button.classList.add('bg-black', 'text-white');
+
+            // Update hidden input with selected color
+            document.getElementById('selectedColor').value = color;
+        }
+
         // Quantity controls
         function incrementQuantity() {
             const quantityElement = document.getElementById('quantity');
@@ -1017,6 +1053,7 @@
         // Order product
         function orderProduct(action = 'checkout') {
             const selectedSize = document.getElementById('selectedSize').value;
+            const selectedColor = document.getElementById('selectedColor').value;
             const quantity = parseInt(document.getElementById('quantity').innerText);
 
             if (!selectedSize) {
@@ -1024,58 +1061,63 @@
                 return;
             }
 
+            if (!selectedColor) {
+                showCustomAlert('Silahkan pilih warna terlebih dahulu');
+                return;
+            }
+
             @auth
-            // Buat data produk baru
-            const newItem = {
-                productId: {{ $product->id }},
-                productName: "{{ $product->name }}",
-                productImage: "{{ asset('img/1.jpg') }}",
-                price: {{ intval(str_replace(',', '', str_replace('Rp ', '', $product->price))) }},
-                size: selectedSize,
-                quantity: quantity
-            };
+            // Buat form untuk POST request
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "{{ route('add-keranjang') }}";
+            form.style.display = 'none';
             
-            // Cek apakah sudah ada keranjang di localStorage
-            let cartItems = [];
-            const existingCart = localStorage.getItem('cartItems');
+            // Tambahkan CSRF token
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = "{{ csrf_token() }}";
+            form.appendChild(csrfToken);
             
-            if (existingCart) {
-                // Jika keranjang sudah ada, ambil isinya
-                cartItems = JSON.parse(existingCart);
-            }
+            // Tambahkan product_id
+            const productId = document.createElement('input');
+            productId.type = 'hidden';
+            productId.name = 'product_id';
+            productId.value = "{{ $product->id }}";
+            form.appendChild(productId);
             
-            // Cek apakah produk sudah ada di keranjang (dengan size yang sama)
-            const existingItemIndex = cartItems.findIndex(
-                item => item.productId === newItem.productId && item.size === newItem.size
-            );
+            // Tambahkan quantity
+            const quantityInput = document.createElement('input');
+            quantityInput.type = 'hidden';
+            quantityInput.name = 'quantity';
+            quantityInput.value = quantity;
+            form.appendChild(quantityInput);
             
-            if (existingItemIndex !== -1) {
-                // Jika produk sudah ada, tambahkan quantity saja
-                cartItems[existingItemIndex].quantity += newItem.quantity;
-            } else {
-                // Jika produk belum ada, tambahkan ke array
-                cartItems.push(newItem);
-            }
+            // Tambahkan size
+            const sizeInput = document.createElement('input');
+            sizeInput.type = 'hidden';
+            sizeInput.name = 'size';
+            sizeInput.value = selectedSize;
+            form.appendChild(sizeInput);
             
-            // Simpan kembali ke localStorage
-            localStorage.setItem('cartItems', JSON.stringify(cartItems));
-
-            // Hitung total item di keranjang
-            const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
-
-            // Jika action adalah checkout, redirect ke halaman cart
-            // Jika tidak (stay), tetap di halaman dan tampilkan pesan sukses
-            if (action === 'checkout') {
-                window.location.href = "{{ route('cart') }}";
-            } else {
-                showCustomAlert(`Produk berhasil ditambahkan ke keranjang<br>Total item di keranjang: ${totalItems}`, 'success');
-            }
+            // Tambahkan color
+            const colorInput = document.createElement('input');
+            colorInput.type = 'hidden';
+            colorInput.name = 'color';
+            colorInput.value = selectedColor;
+            form.appendChild(colorInput);
+            
+            // Tambahkan form ke body dan submit
+            document.body.appendChild(form);
+            form.submit();
         @else
             // Simpan data produk ke sessionStorage agar bisa diambil setelah login
             const productData = {
                 productId: {{ $product->id }},
                 productSlug: "{{ $product->slug }}",
                 size: selectedSize,
+                color: selectedColor,
                 quantity: quantity
             };
 

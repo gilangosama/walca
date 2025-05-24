@@ -7,6 +7,9 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CreateKeranjangsTableController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\MidtransController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,9 +28,14 @@ Route::get('/lookbook', function () {
     return view('lookbook');
 })->name('lookbook');
 
-Route::get('/cart', function () {
-    return view('cart');
-})->name('cart');
+// Keranjang routes
+Route::get('/cart', [CartController::class, 'index'])->name('cart');
+Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+Route::patch('/cart/update/{id}', [CartController::class, 'updateQuantity'])->name('cart.update');
+Route::delete('/cart/remove/{id}', [CartController::class, 'removeItem'])->name('cart.remove');
+Route::post('/cart/checkout', [CartController::class, 'checkoutToSession'])->name('cart.checkoutToSession');
+Route::post('/cart/migrate', [AuthenticatedSessionController::class, 'migrateCart'])->name('cart.migrate');
+Route::get('/create-keranjangs-table', CreateKeranjangsTableController::class)->name('create-keranjangs-table');
 
 Route::get('/orders', function () {
     return view('orders');
@@ -36,7 +44,7 @@ Route::get('/orders', function () {
 Route::get('/checkout', [\App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect('/');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -68,11 +76,15 @@ Route::get('/ongkir', [OngkirController::class, 'index']);
 Route::get('/destination', [OngkirController::class, 'getDestination']);
 Route::post('/get-cost', [OngkirController::class, 'getCost'])->name('get-cost');
 
-Route::post('/cart/checkout', [CartController::class, 'checkoutToSession'])->name('cart.checkoutToSession');
-
 Route::post('/checkout/place-order', [App\Http\Controllers\CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
 Route::get('/checkout/success', function () {
     return view('checkout-success');
 })->name('checkout.success');
+
+// Midtrans Routes
+Route::post('/midtrans/notification', [MidtransController::class, 'handleNotification'])->name('midtrans.notification');
+Route::get('/midtrans/finish', [MidtransController::class, 'finishRedirect'])->name('midtrans.finish');
+Route::get('/midtrans/unfinish', [MidtransController::class, 'unfinishRedirect'])->name('midtrans.unfinish');
+Route::get('/midtrans/error', [MidtransController::class, 'errorRedirect'])->name('midtrans.error');
 
 require __DIR__ . '/auth.php';
