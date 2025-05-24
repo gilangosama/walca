@@ -1,10 +1,10 @@
 <x-app-layout>
     <div class="max-w-7xl mx-auto mt-10 py-10">
-        <form action="{{ isset($address) ? route('addresses.update', $address->id) : route('add-address') }}"
+        <form action="{{ isset($address) ? route('update-address', $address->id) : route('add-address') }}"
             method="post" class="bg-black rounded-lg shadow-md border border-gray-900 p-8">
             @csrf
             @if (isset($address))
-                @method('PUT')
+                @method('PATCH')
             @else
                 @method('POST')
             @endif

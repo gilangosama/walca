@@ -80,25 +80,33 @@
                 </div>
             </div>
         </div>
-        <div class="flex items-center justify-end gap-4 mt-6">
-            <x-primary-button
-                @click="window.location.href='{{ route('create-address') }}'">{{ __('New Address') }}</x-primary-button>
-        </div>
 
         <!-- Address List -->
         @if (isset($user) && $user->address && $user->address->count())
             <div
                 class="p-6 bg-white rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md mt-6">
-                <h3 class="text-md font-semibold text-gray-800 mb-4 pb-2 border-b flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-500" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    {{ __('Your addresses') }}
-                </h3>
+                <div class="text-md font-semibold text-gray-800 mb-4 pb-2 border-b flex justify-between items-center">
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-500" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {{ __('Your addresses') }}
+                    </div>
+                    <div>
+
+                        <a href="{{ route('add-address') }}" class="flex items-center gap-2 p-2 text-white hover:bg-gray-600 transition-colors rounded shadow-sm bg-gray-800 ">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        {{ __('New Address') }}
+                    </a>
+                </div>
+                </div>
                 <div class="space-y-4">
                     @foreach ($user->address as $address)
                         <div

@@ -59,7 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/add-address', [AddressController::class, 'create'])->name('create-address');
     Route::post('/add-address', [AddressController::class, 'addAddress'])->name('add-address');
     Route::get('/edit-address/{id}', [AddressController::class, 'edit'])->name('edit-address');
-    Route::patch('/edit-address', [AddressController::class, 'update'])->name('update-address');
+    Route::patch('/edit-address/{id}', [AddressController::class, 'update'])->name('update-address');
     Route::delete('/add-address/{id}', [AddressController::class, 'deleteAddress'])->name('delete-address');
 });
 

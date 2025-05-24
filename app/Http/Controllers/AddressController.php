@@ -88,7 +88,7 @@ class AddressController extends Controller
 
     public function update(Request $request, $id)
     {
-        dd($request->all());
+        // dump($request->all());
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'country' => 'required|string|max:255',
@@ -111,7 +111,7 @@ class AddressController extends Controller
             'name' => $validated['name'],
             'no_telp' => $validated['no_telp'],
             'label' => $validated['label'],
-            'country' => 'indonesia',
+            'country' => $validated['country'],
             'street' => $validated['street'],
             'detail' => $validated['detail'],
             'province' => $validated['province'],
@@ -120,7 +120,7 @@ class AddressController extends Controller
             'village' => $validated['village'],
             'postal_code' => $validated['postal_code'],
         ]);
-        dd($address);
+        // dd($address);
         return redirect()->back()->with('status', 'Alamat berhasil di update.');
     }
 
