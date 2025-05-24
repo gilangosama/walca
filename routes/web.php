@@ -51,7 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     // Admin routes
     Route::middleware(['admin'])->prefix('admin')->group(function () {
         Route::get('/chat-instructions', function () {
@@ -64,8 +64,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/regency/{provinceId}', [AddressController::class, 'getRegency'])->name('get-regency');
     Route::get('/district/{regencyId}', [AddressController::class, 'getDistrict'])->name('get-district');
     Route::get('/village/{districtId}', [AddressController::class, 'getVillage'])->name('get-village');
+    Route::get('/add-address', [AddressController::class, 'create'])->name('create-address');
     Route::post('/add-address', [AddressController::class, 'addAddress'])->name('add-address');
-    Route::patch('/edit-address/{id}', [AddressController::class, 'editAddress'])->name('edit-address');
+    Route::get('/edit-address/{id}', [AddressController::class, 'edit'])->name('edit-address');
+    Route::patch('/edit-address', [AddressController::class, 'update'])->name('update-address');
     Route::delete('/add-address/{id}', [AddressController::class, 'deleteAddress'])->name('delete-address');
 });
 
@@ -75,7 +77,7 @@ Route::get('/destination', [OngkirController::class, 'getDestination']);
 Route::post('/get-cost', [OngkirController::class, 'getCost'])->name('get-cost');
 
 Route::post('/checkout/place-order', [App\Http\Controllers\CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
-Route::get('/checkout/success', function() {
+Route::get('/checkout/success', function () {
     return view('checkout-success');
 })->name('checkout.success');
 

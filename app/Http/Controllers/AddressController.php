@@ -35,6 +35,19 @@ class AddressController extends Controller
         return response()->json($villages);
     }
 
+    public function create()
+    {
+        return view('profile.formAddress');
+    }
+
+    public function edit($id) {
+        $address = Address::findOrFail($id);
+        // dd($address);
+        return view('profile.formAddress', [
+            'address' => $address,
+        ]);
+    }
+
     public function addAddress(Request $request)
     {
         // dd($request->all());
@@ -73,8 +86,9 @@ class AddressController extends Controller
         return redirect()->back()->with('status', 'Alamat berhasil ditambahkan.');
     }
 
-    public function editAddress(Request $request, $id)
+    public function update(Request $request, $id)
     {
+        dd($request->all());
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'country' => 'required|string|max:255',
@@ -88,6 +102,7 @@ class AddressController extends Controller
             'village' => 'required|string|max:255',
             'postal_code' => 'required|string|max:10',
         ]);
+
         $address = Address::findOrFail($id);
         // dump($address);
 
@@ -105,7 +120,7 @@ class AddressController extends Controller
             'village' => $validated['village'],
             'postal_code' => $validated['postal_code'],
         ]);
-        // dd($address);
+        dd($address);
         return redirect()->back()->with('status', 'Alamat berhasil di update.');
     }
 
